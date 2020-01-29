@@ -191,7 +191,7 @@ php bin/console lint:yaml ./config
 ```
 
 ```bash
-php bin/console lint:twig ./src
+php bin/console lint:twig ./templates
 ```
 
 ```bash
