@@ -128,11 +128,8 @@ cat > ./phpcs.xml <<EOF
     <arg name="cache" value=".phpcs-cache" />
     <arg name="colors" />
     <arg name="extensions" value="php" />
-    <rule ref="PEAR" />
-    <rule ref="MySource" />
-    <rule ref="Zend" />
     <rule ref="PSR12" />
-    <rule ref="Squiz" />
+    <rule ref="PSR1" />
     <file>bin/</file>
     <file>config/</file>
     <file>public/</file>
