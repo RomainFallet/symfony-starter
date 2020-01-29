@@ -171,7 +171,110 @@ cat > ./phpmd.xml <<EOF
 EOF
 ```
 
-## Usage
+## Install EditorConfig
+
+```bash
+cat > ./.editorconfig <<EOF
+# EditorConfig is awesome: https://EditorConfig.org
+root = true
+
+[*]
+end_of_line = lf
+insert_final_newline = true
+charset = utf-8
+indent_style = space
+indent_size = 2
+trim_trailing_whitespace = true
+
+[*.php]
+indent_size = 4
+EOF
+```
+
+## Insall pre-commit hook
+
+```bash
+# Add pre-commit hook
+cat > ./.git/hooks/pre-commit <<<EOF
+#!/bin/bash
+
+./vendor/bin/phpstan analyse
+if [ ! $? = 0 ]; then exit 1; fi
+./vendor/bin/phpmd ./src text ./phpmd.xml
+if [ ! $? = 0 ]; then exit 1; fi
+./vendor/bin/phpcs
+if [ ! $? = 0 ]; then exit 1; fi
+php bin/console lint:yaml ./config
+if [ ! $? = 0 ]; then exit 1; fi
+php bin/console lint:twig ./templates
+if [ ! $? = 0 ]; then exit 1; fi
+npx ts-standard
+if [ ! $? = 0 ]; then exit 1; fi
+npx stylelint ./assets/css/**.*css
+if [ ! $? = 0 ]; then exit 1; fi
+
+EOF
+
+# Make pre-commit hook executable
+chmod -x ./.git/hooks/pre-commit
+```
+
+## Install CI with GitHub Actions
+
+```bash
+cat > ./.github/workflows/lint.yml <<<EOF
+name: Lint project
+
+on: [push, pull_request]
+
+jobs:
+  phpstan:
+    runs-on: ubuntu-18.04
+    steps:
+    - uses: actions/checkout@v2
+    - name: Check code with PHP Stan
+      run: ./vendor/bin/phpstan analyse
+  phpcs:
+    runs-on: ubuntu-18.04
+    steps:
+    - uses: actions/checkout@v2
+    - name: Check code with PHP Code Sniffer
+      run: ./vendor/bin/phpcs
+  phpmd:
+    runs-on: ubuntu-18.04
+    steps:
+    - uses: actions/checkout@v2
+    - name: Check code with PHP Mess Detector
+      run: ./vendor/bin/phpmd ./src,./tests text ./phpmd.xml
+  symfonylint-yaml:
+    runs-on: ubuntu-18.04
+    steps:
+    - uses: actions/checkout@v2
+    - name: Check code with Yaml Symfony linter
+      run: php bin/console lint:yaml ./config
+  symfonylint-twig:
+    runs-on: ubuntu-18.04
+    steps:
+    - uses: actions/checkout@v2
+    - name: Check code with Twig Symfony linter
+      run: php bin/console lint:twig ./templates
+  standardjs:
+    runs-on: ubuntu-18.04
+    steps:
+    - uses: actions/checkout@v2
+    - name: Check code with StandardJS
+      run: npx ts-standard
+  stylelint:
+    runs-on: ubuntu-18.04
+    steps:
+    - uses: actions/checkout@v2
+    - name: Check code with StyleLint
+      run: npx stylelint ./assets/css/**.*css
+
+EOF
+```
+
+## Lint usage
 
 ```bash
 ./vendor/bin/phpstan analyse
