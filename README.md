@@ -74,9 +74,6 @@ import '../css/app.css'
 
 console.log('Hello Webpack Encore! Edit me in assets/ts/app.ts')
 EOF
-
-# Configure main CSS file
-cat /dev/null > ./assets/css/app.css
 ```
 
 ## Install StandardJS
@@ -268,6 +265,19 @@ jobs:
     - name: Check code with StyleLint
       run: npx stylelint ./assets/css/**.*css
 EOF
+```
+
+## Fix existing errors
+
+```bash
+# PHP
+./vendor/bin/phpcbf
+
+# JS
+npx ts-standard --fix
+
+# CSS
+npx stylelint ./assets/css/**.*css --fix
 ```
 
 ## Lint usage
