@@ -229,42 +229,56 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
     - uses: actions/checkout@v2
+    - name: Install deps
+      run: composer install
     - name: Check code with PHP Stan
       run: ./vendor/bin/phpstan analyse
   phpcs:
     runs-on: ubuntu-18.04
     steps:
     - uses: actions/checkout@v2
+    - name: Install deps
+      run: composer install
     - name: Check code with PHP Code Sniffer
       run: ./vendor/bin/phpcs
   phpmd:
     runs-on: ubuntu-18.04
     steps:
     - uses: actions/checkout@v2
+    - name: Install deps
+      run: composer install
     - name: Check code with PHP Mess Detector
       run: ./vendor/bin/phpmd ./src,./tests text ./phpmd.xml
   symfonylint-yaml:
     runs-on: ubuntu-18.04
     steps:
     - uses: actions/checkout@v2
+    - name: Install deps
+      run: composer install
     - name: Check code with Yaml Symfony linter
       run: php bin/console lint:yaml ./config
   symfonylint-twig:
     runs-on: ubuntu-18.04
     steps:
     - uses: actions/checkout@v2
+    - name: Install deps
+      run: composer install
     - name: Check code with Twig Symfony linter
       run: php bin/console lint:twig ./templates
   standardjs:
     runs-on: ubuntu-18.04
     steps:
     - uses: actions/checkout@v2
+    - name: Install deps
+      run: yarn install
     - name: Check code with StandardJS
       run: npx ts-standard
   stylelint:
     runs-on: ubuntu-18.04
     steps:
     - uses: actions/checkout@v2
+    - name: Install deps
+      run: yarn install
     - name: Check code with StyleLint
       run: npx stylelint ./assets/css/**.*css
 EOF
