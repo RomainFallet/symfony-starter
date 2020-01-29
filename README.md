@@ -195,7 +195,7 @@ EOF
 
 ```bash
 # Add pre-commit hook
-cat > ./.git/hooks/pre-commit <<<EOF
+cat > ./.git/hooks/pre-commit <<EOF
 #!/bin/bash
 
 ./vendor/bin/phpstan analyse
