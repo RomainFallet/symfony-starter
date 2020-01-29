@@ -135,6 +135,9 @@ cat > ./phpcs.xml <<EOF
   <file>tests/</file>
 </ruleset>
 EOF
+
+# Configure .gitignore
+echo ".phpcs-cache" >> ./.gitignore
 ```
 
 ## Install PHP Mess Detector
