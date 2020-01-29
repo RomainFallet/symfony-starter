@@ -182,7 +182,7 @@ EOF
 ```
 
 ```bash
-./vendor/bin/phpmd ./src text ./phpmd.xml
+./vendor/bin/phpmd ./src,./tests text ./phpmd.xml
 ```
 
 ```bash
