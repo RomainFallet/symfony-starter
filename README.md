@@ -200,7 +200,7 @@ cat > ./.git/hooks/pre-commit <<<EOF
 
 ./vendor/bin/phpstan analyse
 if [ ! $? = 0 ]; then exit 1; fi
-./vendor/bin/phpmd ./src text ./phpmd.xml
+./vendor/bin/phpmd ./src,./tests text ./phpmd.xml
 if [ ! $? = 0 ]; then exit 1; fi
 ./vendor/bin/phpcs
 if [ ! $? = 0 ]; then exit 1; fi
