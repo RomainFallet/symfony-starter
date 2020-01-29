@@ -1,5 +1,7 @@
 # Symfony starter
 
+![Symfony logo](https://user-images.githubusercontent.com/6952638/71176964-3ab4e480-226b-11ea-8522-081106cbff50.png)
+
 ## Create a new Symfony app
 
 ```bash
