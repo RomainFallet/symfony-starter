@@ -35,7 +35,6 @@ Encore
   .enableTypeScriptLoader()
 
 module.exports = Encore.getWebpackConfig()
-
 EOF
 
 # Install JS deps
@@ -57,7 +56,6 @@ cat > ./tsconfig.json <<EOF
   },
   "include": ["./assets/ts/**/*.ts"]
 }
-
 EOF
 ```
 
@@ -75,7 +73,6 @@ cat > ./assets/ts/app.ts <<EOF
 import '../css/app.css'
 
 console.log('Hello Webpack Encore! Edit me in assets/ts/app.ts')
-
 EOF
 ```
 
@@ -96,7 +93,6 @@ cat > ./.stylelintrc.json <<EOF
 {
   "extends": "stylelint-config-standard"
 }
-
 EOF
 ```
 
@@ -113,7 +109,6 @@ parameters:
       - ./src
       - ./tests
   level: max
-
 EOF
 ```
 
@@ -139,7 +134,6 @@ cat > ./phpcs.xml <<EOF
   <file>src/</file>
   <file>tests/</file>
 </ruleset>
-
 EOF
 ```
 
@@ -167,7 +161,6 @@ cat > ./phpmd.xml <<EOF
   <rule ref="rulesets/naming.xml"></rule>
   <rule ref="rulesets/unusedcode.xml"></rule>
 </ruleset>
-
 EOF
 ```
 
@@ -212,7 +205,6 @@ npx ts-standard
 if [ ! $? = 0 ]; then exit 1; fi
 npx stylelint ./assets/css/**.*css
 if [ ! $? = 0 ]; then exit 1; fi
-
 EOF
 
 # Make pre-commit hook executable
@@ -222,7 +214,9 @@ chmod -x ./.git/hooks/pre-commit
 ## Install CI with GitHub Actions
 
 ```bash
-cat > ./.github/workflows/lint.yml <<<EOF
+mkdir ./.github
+mkdir ./.github/workflows
+cat > ./.github/workflows/lint.yml <<EOF
 name: Lint project
 
 on: [push, pull_request]
@@ -270,7 +264,6 @@ jobs:
     - uses: actions/checkout@v2
     - name: Check code with StyleLint
       run: npx stylelint ./assets/css/**.*css
-
 EOF
 ```
 
