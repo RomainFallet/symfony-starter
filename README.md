@@ -88,7 +88,7 @@ yarn add -D ts-standard@3.1.*
 yarn add -D stylelint@13.0.* stylelint-config-standard@19.0.*
 
 # Configure stylelint
-cat > ./stylelintrc.json <<EOF
+cat > ./.stylelintrc.json <<EOF
 {
   "extends": "stylelint-config-standard"
 }
