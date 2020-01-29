@@ -136,9 +136,6 @@ cat > ./phpcs.xml <<EOF
   <arg name="extensions" value="php" />
   <rule ref="PSR12" />
   <rule ref="PSR1" />
-  <file>bin/</file>
-  <file>config/</file>
-  <file>public/</file>
   <file>src/</file>
   <file>tests/</file>
 </ruleset>
