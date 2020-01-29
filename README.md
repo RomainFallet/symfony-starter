@@ -34,7 +34,7 @@ Encore
 ;
 
 module.exports = Encore.getWebpackConfig();
-EOF;
+EOF
 
 # Install JS deps
 yarn install
