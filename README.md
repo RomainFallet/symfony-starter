@@ -14,26 +14,26 @@ composer require --dev symfony/webpack-encore-bundle:1.7.*
 
 # Configure Webpack encore
 cat > ./webpack.config.js <<EOF
-const Encore = require('@symfony/webpack-encore');
+const Encore = require('@symfony/webpack-encore')
 
 if (!Encore.isRuntimeEnvironmentConfigured()) {
-    Encore.configureRuntimeEnvironment(process.env.NODE_ENV || 'dev');
+  Encore.configureRuntimeEnvironment(process.env.NODE_ENV || 'dev')
 }
 
 Encore
-    .setOutputPath('public/build/')
-    .setPublicPath('/build')
-    .addEntry('app', './assets/ts/app.ts')
-    .splitEntryChunks()
-    .enableSingleRuntimeChunk()
-    .cleanupOutputBeforeBuild()
-    .enableBuildNotifications()
-    .enableSourceMaps(!Encore.isProduction())
-    .enableVersioning(Encore.isProduction())
-    .enableTypeScriptLoader()
-;
+  .setOutputPath('public/build/')
+  .setPublicPath('/build')
+  .addEntry('app', './assets/ts/app.ts')
+  .splitEntryChunks()
+  .enableSingleRuntimeChunk()
+  .cleanupOutputBeforeBuild()
+  .enableBuildNotifications()
+  .enableSourceMaps(!Encore.isProduction())
+  .enableVersioning(Encore.isProduction())
+  .enableTypeScriptLoader()
 
-module.exports = Encore.getWebpackConfig();
+module.exports = Encore.getWebpackConfig()
+
 EOF
 
 # Install JS deps
@@ -55,6 +55,7 @@ cat > ./tsconfig.json <<EOF
   },
   "include": ["./assets/ts/**/*.ts"]
 }
+
 EOF
 ```
 
@@ -69,9 +70,10 @@ rm -rf ./assets/js/
 
 # Configure main TS file
 cat > ./assets/ts/app.ts <<EOF
-import '../css/app.css';
+import '../css/app.css'
 
-console.log('Hello Webpack Encore! Edit me in assets/ts/app.ts');
+console.log('Hello Webpack Encore! Edit me in assets/ts/app.ts')
+
 EOF
 ```
 
@@ -92,6 +94,7 @@ cat > ./.stylelintrc.json <<EOF
 {
   "extends": "stylelint-config-standard"
 }
+
 EOF
 ```
 
@@ -104,10 +107,11 @@ composer require --dev phpstan/phpstan:0.12.* phpstan/phpstan-doctrine:0.12.* ph
 # Configure PHP Stan
 cat > ./phpstan.neon <<EOF
 parameters:
-    paths:
-        - ./src
-        - ./tests
-    level: max
+  paths:
+      - ./src
+      - ./tests
+  level: max
+
 EOF
 ```
 
@@ -121,21 +125,22 @@ composer require --dev -n squizlabs/php_codesniffer:3.5.*
 cat > ./phpcs.xml <<EOF
 <?xml version="1.0" encoding="UTF-8"?>
 <ruleset
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:noNamespaceSchemaLocation="vendor/squizlabs/php_codesniffer/phpcs.xsd"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="vendor/squizlabs/php_codesniffer/phpcs.xsd"
 >
-    <arg name="basepath" value="." />
-    <arg name="cache" value=".phpcs-cache" />
-    <arg name="colors" />
-    <arg name="extensions" value="php" />
-    <rule ref="PSR12" />
-    <rule ref="PSR1" />
-    <file>bin/</file>
-    <file>config/</file>
-    <file>public/</file>
-    <file>src/</file>
-    <file>tests/</file>
+  <arg name="basepath" value="." />
+  <arg name="cache" value=".phpcs-cache" />
+  <arg name="colors" />
+  <arg name="extensions" value="php" />
+  <rule ref="PSR12" />
+  <rule ref="PSR1" />
+  <file>bin/</file>
+  <file>config/</file>
+  <file>public/</file>
+  <file>src/</file>
+  <file>tests/</file>
 </ruleset>
+
 EOF
 ```
 
@@ -149,20 +154,21 @@ composer require --dev phpmd/phpmd:2.8.*
 cat > ./phpmd.xml <<EOF
 <?xml version="1.0" encoding="UTF-8" ?>
 <ruleset name="PHPMD rule set"
-    xmlns="http://pmd.sf.net/ruleset/1.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sf.net/ruleset/1.0.0
-    http://pmd.sf.net/ruleset_xml_schema.xsd"
-    xsi:noNamespaceSchemaLocation="
-    http://pmd.sf.net/ruleset_xml_schema.xsd"
+  xmlns="http://pmd.sf.net/ruleset/1.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://pmd.sf.net/ruleset/1.0.0
+  http://pmd.sf.net/ruleset_xml_schema.xsd"
+  xsi:noNamespaceSchemaLocation="
+  http://pmd.sf.net/ruleset_xml_schema.xsd"
 >
-    <rule ref="rulesets/cleancode.xml"></rule>
-    <rule ref="rulesets/codesize.xml"></rule>
-    <rule ref="rulesets/controversial.xml"></rule>
-    <rule ref="rulesets/design.xml"></rule>
-    <rule ref="rulesets/naming.xml"></rule>
-    <rule ref="rulesets/unusedcode.xml"></rule>
+  <rule ref="rulesets/cleancode.xml"></rule>
+  <rule ref="rulesets/codesize.xml"></rule>
+  <rule ref="rulesets/controversial.xml"></rule>
+  <rule ref="rulesets/design.xml"></rule>
+  <rule ref="rulesets/naming.xml"></rule>
+  <rule ref="rulesets/unusedcode.xml"></rule>
 </ruleset>
+
 EOF
 ```
 
