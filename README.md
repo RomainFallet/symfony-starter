@@ -159,7 +159,9 @@ cat > ./phpmd.xml <<EOF
 >
   <rule ref="rulesets/cleancode.xml"></rule>
   <rule ref="rulesets/codesize.xml"></rule>
-  <rule ref="rulesets/controversial.xml"></rule>
+  <rule ref="rulesets/controversial.xml">
+      <exclude name="Superglobals" />
+  </rule>
   <rule ref="rulesets/design.xml"></rule>
   <rule ref="rulesets/naming.xml"></rule>
   <rule ref="rulesets/unusedcode.xml"></rule>
