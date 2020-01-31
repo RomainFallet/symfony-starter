@@ -274,7 +274,7 @@ jobs:
     - name: Install deps
       run: yarn install
     - name: Check code with StandardJS
-      run: npx ts-standard
+      run: npx ts-standard ./assets/ts/**/*.ts
   stylelint:
     runs-on: ubuntu-18.04
     steps:
@@ -282,7 +282,7 @@ jobs:
     - name: Install deps
       run: yarn install
     - name: Check code with StyleLint
-      run: npx stylelint ./assets/css/**.*css
+      run: npx stylelint ./assets/css/**/*.css
 EOF
 ```
 
@@ -296,7 +296,7 @@ EOF
 npx ts-standard --fix
 
 # CSS
-npx stylelint ./assets/css/**.*css --fix
+npx stylelint ./assets/css/**/*.css --fix
 ```
 
 ## Lint usage
@@ -322,9 +322,9 @@ php bin/console lint:twig ./templates
 ```
 
 ```bash
-npx ts-standard
+npx ts-standard ./assets/ts/**/*.ts
 ```
 
 ```bash
-npx stylelint ./assets/css/**.*css
+npx stylelint ./assets/css/**/*.css
 ```
