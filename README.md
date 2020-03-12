@@ -6,7 +6,7 @@
 
 ```bash
 # Create the project
-symfony new <my_project_name> --version=5.0.* --full
+symfony new <my_project_name> --version=~5.0.0 --full
 
 # Go inside the project
 cd <my_project_name>
@@ -16,7 +16,7 @@ cd <my_project_name>
 
 ```bash
 # Install Webpack encore
-composer require --dev symfony/webpack-encore-bundle:1.7.*
+composer require --dev symfony/webpack-encore-bundle:~1.7.0
 
 # Configure Webpack encore
 cat > ./webpack.config.js <<EOF
@@ -45,7 +45,7 @@ EOF
 yarn install
 
 # Install TypeScript deps
-yarn add -D typescript@3.7.* ts-loader@5.3.*
+yarn add -D typescript@~3.7.0 ts-loader@~5.3.0
 
 # Configure TypeScript
 cat > ./tsconfig.json <<EOF
@@ -90,7 +90,7 @@ yarn add -D ts-standard@3.1.*
 
 ```bash
 # Install stylelint
-yarn add -D stylelint@13.0.* stylelint-config-standard@19.0.*
+yarn add -D stylelint@~13.0.0 stylelint-config-standard@~19.0.0
 
 # Configure stylelint
 cat > ./.stylelintrc.json <<EOF
@@ -104,7 +104,7 @@ EOF
 
 ```bash
 # Install PHP Stan
-composer require --dev phpstan/phpstan:0.12.* phpstan/phpstan-doctrine:0.12.* phpstan/phpstan-symfony:0.12.*
+composer require --dev phpstan/phpstan:~0.12.0 phpstan/phpstan-doctrine:~0.12.0 phpstan/phpstan-symfony:~0.12.0
 
 # Configure PHP Stan
 cat > ./phpstan.neon <<EOF
@@ -120,7 +120,7 @@ EOF
 
 ```bash
 # Install Code Sniffer
-composer require --dev -n squizlabs/php_codesniffer:3.5.*
+composer require --dev -n squizlabs/php_codesniffer:~3.5.0
 
 # Configure Code Sniffer
 cat > ./phpcs.xml <<EOF
@@ -148,7 +148,7 @@ echo ".phpcs-cache" >> ./.gitignore
 
 ```bash
 # Install PHP Mess Detector
-composer require --dev phpmd/phpmd:2.8.*
+composer require --dev phpmd/phpmd:~2.8.0
 
 # Configure PHP Mess Detector
 cat > ./phpmd.xml <<EOF
