@@ -239,7 +239,7 @@ mkdir ./.github/workflows
 cat > ./.github/workflows/lint.yml <<EOF
 name: Lint project
 
-on: [push, pull_request]
+on: [pull_request]
 
 jobs:
   phpstan:
