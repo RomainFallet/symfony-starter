@@ -5,7 +5,11 @@
 ## Create a new Symfony app
 
 ```bash
+# Create the project
 symfony new <my_project_name> --version=5.0.* --full
+
+# Go inside the project
+cd <my_project_name>
 ```
 
 ## Install Webpack encore
