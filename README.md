@@ -80,10 +80,21 @@ console.log('Hello Webpack Encore! Edit me in assets/ts/app.ts')
 EOF
 ```
 
-## Install StandardJS
+## Install ESLint
 
 ```bash
-yarn add -D ts-standard@3.1.*
+# Install ESLint
+yarn add -D eslint@~6.8.0 eslint-plugin-standard@~4.0.0 eslint-plugin-promise@~4.2.0 eslint-plugin-import@~2.20.0 eslint-plugin-node@~11.0.0 @typescript-eslint/eslint-plugin@~2.23.0 eslint-config-standard-with-typescript@~14.0.0
+
+# Configure ESLint
+cat > ./.eslintrc.json <<EOF
+{
+  "extends": "standard-with-typescript",
+  "parserOptions": {
+      "project": "./tsconfig.json"
+  }
+}
+EOF
 ```
 
 ## Install Stylelint
@@ -210,7 +221,7 @@ php bin/console lint:yaml ./config
 if [ ! $? = 0 ]; then exit 1; fi
 php bin/console lint:twig ./templates
 if [ ! $? = 0 ]; then exit 1; fi
-npx ts-standard
+npx eslint ./assets/ts/**/*.ts
 if [ ! $? = 0 ]; then exit 1; fi
 npx stylelint ./assets/css/**.*css
 if [ ! $? = 0 ]; then exit 1; fi
@@ -271,14 +282,14 @@ jobs:
       run: composer install
     - name: Check code with Twig Symfony linter
       run: php bin/console lint:twig ./templates
-  standardjs:
+  eslint:
     runs-on: ubuntu-18.04
     steps:
     - uses: actions/checkout@v2
     - name: Install deps
       run: yarn install
-    - name: Check code with StandardJS
-      run: npx ts-standard ./assets/ts/**/*.ts
+    - name: Check code with ESLint
+      run: npx eslint ./assets/ts/**/*.ts
   stylelint:
     runs-on: ubuntu-18.04
     steps:
@@ -297,7 +308,7 @@ EOF
 ./vendor/bin/phpcbf
 
 # JS
-npx ts-standard --fix
+npx eslint ./assets/ts/**/*.ts --fix
 
 # CSS
 npx stylelint ./assets/css/**/*.css --fix
@@ -326,7 +337,7 @@ php bin/console lint:twig ./templates
 ```
 
 ```bash
-npx ts-standard ./assets/ts/**/*.ts
+npx eslint ./assets/ts/**/*.ts
 ```
 
 ```bash
