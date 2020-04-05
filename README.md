@@ -4,13 +4,48 @@
 
 **These instructions are part of the [symfony-dev-deploy](https://github.com/RomainFallet/symfony-dev-deploy) repository.**
 
-The purpose of this repository is to provide instructions to create and configure a new Symfony app from scratch with appropriate linter, assets bundler, editor config, continuous integration & continuous delivery on Ubuntu, macOS and Windows.
+The purpose of this repository is to provide instructions to create and configure a new Symfony app from scratch with appropriate linters, assets bundler, editor config, testing utilities, continuous integration & continuous delivery on Ubuntu, macOS and Windows.
 
 On Windows, commands are meant to be executed on PowerShell.
 
 ## Table of contents
 
+- [Quickstart](#quickstart)
+- [Manual configuration](#manual-configuration)
+  - [Create a new app with Symfony CLI](#create-a-new-app-with-symfony-cli)
+  - [Install Symfony testing utilities](#install-symfony-testing-utilities)
+  - [Install Webpack encore](#install-webpack-encore)
+  - [Install JS dependencies](#install-js-dependencies)
+  - [Install TypeScript](#install-typeScript)
+  - [Install Prettier code formatter](#install-prettier-code-formatter)
+  - [Install ESLint code linter with StandardJS rules](#install-eslint-code-linter-with-standardjs-rules)
+  - [Install StyleLint code linter with Standard rules](#install-stylelint-code-linter-with-standard-rules)
+  - [Install PHP Code Sniffer code formatter with PSR rules](#install-php-code-sniffer-code-formatter-with-psr-rules)
+  - [Install PHP Stan code linter](#install-php-stan-code-linter)
+  - [Install PHP Mess Detector coder linter](#install-php-mess-detector-code-linter)
+  - [Configure .gitignore](#configure-gitignore)
+  - [Configure .editorconfig](#configure-editorconfig)
+- [Usage](#usage)
+  - [Launch dev server](#launch-dev-server)
+  - [Watch assets changes](#watch-assets-changes)
+  - [Build assets for production](#build-assets-for-production)
+  - [Launch unit tests & functional tests](#launch-unit-tests--functional-tests)
+  - [Check coding style](#check-coding-style)
+  - [Format code automatically](#format-code-automatically)
+  - [Lint code for errors/bad practices](#lint-code-for-errorsbad-practices)
+  - [Execute database migrations](#execute-database-migrations)
+
+## Quickstart
+
+```bash
+git clone https://github.com/RomainFallet/symfony-starter
+```
+
+## Manual configuration
+
 ### Create a new app with Symfony CLI
+
+[Back to top ↑](#table-of-contents)
 
 ```bash
 # Create the project
@@ -20,17 +55,23 @@ symfony new <my_project_name> --version=~5.0.0 --full
 cd <my_project_name>
 ```
 
-### Install Webpack encore
+### Install Symfony testing utilities
+
+[Back to top ↑](#table-of-contents)
 
 ```bash
-composer require --dev symfony/webpack-encore-bundle:~1.7.0
+composer require --dev symfony/test-pack@~1.0.0
 ```
 
-### Configure Webpack encore
+### Install Webpack encore
 
-MacOS & Ubuntu:
+[Back to top ↑](#table-of-contents)
 
 ```bash
+# Install
+composer require --dev symfony/webpack-encore-bundle:~1.7.0
+
+# Configuraton (MacOS & Ubuntu)
 echo "const Encore = require('@symfony/webpack-encore')
 
 if (!Encore.isRuntimeEnvironmentConfigured()) {
@@ -50,11 +91,8 @@ Encore
   .enableTypeScriptLoader()
 
 module.exports = Encore.getWebpackConfig()" | tee ./webpack.config.js > /dev/null
-```
 
-Windows:
-
-```powershell
+# Configuration (Windows)
 Set-Content ./webpack.config.js "const Encore = require('@symfony/webpack-encore')
 
 if (!Encore.isRuntimeEnvironmentConfigured()) {
@@ -76,7 +114,9 @@ Encore
 module.exports = Encore.getWebpackConfig()"
 ```
 
-### Install JS deps
+### Install JS dependencies
+
+[Back to top ↑](#table-of-contents)
 
 ```bash
 yarn install
@@ -84,15 +124,13 @@ yarn install
 
 ### Install TypeScript
 
+[Back to top ↑](#table-of-contents)
+
 ```bash
+# Install
 yarn add -D typescript@~3.7.0 ts-loader@~5.3.0
-```
 
-### Configure TypeScript
-
-MacOS & Ubuntu:
-
-```bash
+# Configuration (MacOS & Ubuntu)
 echo '{
   "compilerOptions": {
     "target": "ES2015",
@@ -104,11 +142,16 @@ echo '{
   },
   "include": ["./assets/ts/**/*.ts"]
 }' | tee ./tsconfig.json > /dev/null
-```
 
-Windows:
 
-```powershell
+mkdir ./assets/ts
+
+rm -rf ./assets/js
+
+echo "import '../css/app.css'
+console.log('Hello Webpack Encore! Edit me in assets/ts/app.ts')" | tee ./assets/ts/app.ts > /dev/null
+
+# Configuration (Windows)
 Set-Content ./webpack.config.js '{
   "compilerOptions": {
     "target": "ES2015",
@@ -120,133 +163,88 @@ Set-Content ./webpack.config.js '{
   },
   "include": ["./assets/ts/**/*.ts"]
 }'
-```
 
-### Configure assets
-
-MacOS & Ubuntu:
-
-```bash
-# Create TS folder
-mkdir ./assets/ts
-
-# Remove JS folder
-rm -rf ./assets/js
-
-# Configure main TS file
-echo "import '../css/app.css'
-
-console.log('Hello Webpack Encore! Edit me in assets/ts/app.ts')" | tee ./assets/ts/app.ts > /dev/null
-```
-
-Windows:
-
-```powershell
-# Create TS folder
 New-Item -ItemType Directory -Force -Path ./assets/ts
 
-# Remove JS folder
 Remove-Item -Recurse -Force ./assets/js
 
-# Configure main TS file
 Set-Content ./assets/ts/app.ts "import '../css/app.css'
-
 console.log('Hello Webpack Encore! Edit me in assets/ts/app.ts')"
 ```
 
-### Install ESLint with StandardJS rules
+### Install Prettier code formatter
+
+[Back to top ↑](#table-of-contents)
 
 ```bash
-yarn add -D eslint@~6.8.0 eslint-plugin-standard@~4.0.0 eslint-plugin-promise@~4.2.0 eslint-plugin-import@~2.20.0 eslint-plugin-node@~11.0.0 @typescript-eslint/eslint-plugin@~2.23.0 eslint-config-standard-with-typescript@~14.0.0
+yarn add -D prettier@~2.0.0 eslint-plugin-prettier@~3.1.0 eslint-config-prettier@~6.10.0 prettier-config-standard@~1.0.0 stylelint-config-prettier@~8.0.0 prettier-plugin-twig-melody@~0.4.0 @prettier/plugin-xml@~0.7.0
 ```
 
-### Configure ESLint
+### Install ESLint code linter with StandardJS rules
 
-MacOS & Ubuntu:
+[Back to top ↑](#table-of-contents)
 
 ```bash
+# Install
+yarn add -D eslint@~6.8.0 eslint-plugin-standard@~4.0.0 eslint-plugin-promise@~4.2.0 eslint-plugin-import@~2.20.0 eslint-plugin-node@~11.0.0 @typescript-eslint/eslint-plugin@~2.23.0 eslint-config-standard-with-typescript@~14.0.0
+
+# Configuration (MacOS & Ubuntu)
 echo '{
-  "extends": "standard-with-typescript",
+  "extends": [
+    "standard-with-typescript",
+    "prettier-standard"
+  ],
   "parserOptions": {
       "project": "./tsconfig.json"
   }
 }' | tee ./.eslintrc.json > /dev/null
-```
 
-Windows:
-
-```powershell
+# Configuration (Windows)
 Set-Content ./.eslintrc.json '{
-  "extends": "standard-with-typescript",
+  "extends": [
+    "standard-with-typescript",
+    "prettier-standard"
+  ],
   "parserOptions": {
       "project": "./tsconfig.json"
   }
 }'
 ```
 
-### Install Stylelint with Standard rules
+### Install StyleLint code linter with Standard rules
+
+[Back to top ↑](#table-of-contents)
 
 ```bash
+# Install
 yarn add -D stylelint@~13.0.0 stylelint-config-standard@~19.0.0
-```
 
-### Configure stylelint
-
-MacOS & Ubuntu:
-
-```bash
+# Configuration (MacOS & Ubuntu)
 echo '{
-  "extends": "stylelint-config-standard"
+  "extends": [
+    "stylelint-config-standard",
+    "stylelint-config-prettier"
+  ]
 }' | tee ./.stylelintrc.json > /dev/null
-```
 
-Windows:
-
-```powershell
+# Configuration (Windows)
 Set-Content ./.stylelintrc.jso '{
-  "extends": "stylelint-config-standard"
+  "extends": [
+    "stylelint-config-standard",
+    "stylelint-config-prettier"
+  ]
 }'
 ```
 
-### Install PHP Stan
+### Install PHP Code Sniffer code formatter with PSR rules
+
+[Back to top ↑](#table-of-contents)
 
 ```bash
-composer require --dev phpstan/phpstan:~0.12.0 phpstan/phpstan-doctrine:~0.12.0 phpstan/phpstan-symfony:~0.12.0
-```
-
-### Configure PHP Stan
-
-MacOS & Ubuntu:
-
-```bash
-echo "parameters:
-  paths:
-      - ./src
-      - ./tests
-  level: max" | tee ./phpstan.neon > /dev/null
-```
-
-Windows:
-
-```powershell
-Set-Content ./phpstan.neon  "parameters:
-  paths:
-      - ./src
-      - ./tests
-  level: max"
-```
-
-### Install PHP Code Sniffer
-
-```bash
+# Install
 composer require --dev -n squizlabs/php_codesniffer:~3.5.0
-```
 
-### Configure Code Sniffer
-
-MacOS & Ubuntu:
-
-```bash
+# Configuration (MacOS & Ubuntu)
 echo '<?xml version="1.0" encoding="UTF-8"?>
 <ruleset
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -264,11 +262,8 @@ echo '<?xml version="1.0" encoding="UTF-8"?>
   <file>src/</file>
   <file>tests/</file>
 </ruleset>' | tee ./phpcs.xml > /dev/null
-```
 
-Windows:
-
-```powershell
+# Configuration (Windows)
 Set-Content ./phpcs.xml '<?xml version="1.0" encoding="UTF-8"?>
 <ruleset
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -288,17 +283,38 @@ Set-Content ./phpcs.xml '<?xml version="1.0" encoding="UTF-8"?>
 </ruleset>'
 ```
 
-### Install PHP Mess Detector
+### Install PHP Stan code linter
+
+[Back to top ↑](#table-of-contents)
 
 ```bash
-composer require --dev phpmd/phpmd:~2.8.0
+# Install
+composer require --dev phpstan/phpstan:~0.12.0 phpstan/phpstan-doctrine:~0.12.0 phpstan/phpstan-symfony:~0.12.0
+
+# Configuration (MacOS & Ubuntu)
+echo "parameters:
+  paths:
+      - ./src
+      - ./tests
+  level: max" | tee ./phpstan.neon > /dev/null
+
+# Configuration (Windows)
+Set-Content ./phpstan.neon  "parameters:
+  paths:
+      - ./src
+      - ./tests
+  level: max"
 ```
 
-### Configure PHP Mess Detector
+### Install PHP Mess Detector code linter
 
-MacOS & Ubuntu:
+[Back to top ↑](#table-of-contents)
 
 ```bash
+# Install
+composer require --dev phpmd/phpmd:~2.8.0
+
+# Configuration (MacOS & Ubuntu)
 echo '<?xml version="1.0" encoding="UTF-8" ?>
 <ruleset name="PHPMD rule set"
   xmlns="http://pmd.sf.net/ruleset/1.0.0"
@@ -316,13 +332,9 @@ echo '<?xml version="1.0" encoding="UTF-8" ?>
   <rule ref="rulesets/design.xml"></rule>
   <rule ref="rulesets/naming.xml"></rule>
   <rule ref="rulesets/unusedcode.xml"></rule>
-  <exclude-pattern>src/Migrations</exclude-pattern>
 </ruleset>' | tee ./phpmd.xml > /dev/null
-```
 
-Windows:
-
-```powershell
+# Configuration (Windows)
 Set-Content ./phpmd.xml '<?xml version="1.0" encoding="UTF-8" ?>
 <ruleset name="PHPMD rule set"
   xmlns="http://pmd.sf.net/ruleset/1.0.0"
@@ -340,31 +352,29 @@ Set-Content ./phpmd.xml '<?xml version="1.0" encoding="UTF-8" ?>
   <rule ref="rulesets/design.xml"></rule>
   <rule ref="rulesets/naming.xml"></rule>
   <rule ref="rulesets/unusedcode.xml"></rule>
-  <exclude-pattern>src/Migrations</exclude-pattern>
 </ruleset>'
 ```
 
 ### Configure .gitignore
 
-MacOS & Ubuntu:
+[Back to top ↑](#table-of-contents)
 
 ```bash
+# Configuration (MacOS & Ubuntu)
 echo ".phpcs-cache
-src/Migrations" | tee -a ./.gitignore
-```
+src/Migrations"
 
-Windows:
-
-```powershell
+# Configuration (Windows)
 Add-Content ./.gitignore ".phpcs-cache
 src/Migrations"
 ```
 
 ### Configure .editorconfig
 
-MacOS & Ubuntu:
+[Back to top ↑](#table-of-contents)
 
 ```bash
+# Configuration (MacOS & Ubuntu)
 echo "# EditorConfig is awesome: https://EditorConfig.org
 root = true
 
@@ -378,11 +388,8 @@ trim_trailing_whitespace = true
 
 [*.php]
 indent_size = 4" | tee ./.editorconfig > /dev/null
-```
 
-Windows:
-
-```powershell
+# Configuration (Windows)
 Set-Content ./.editorconfig "# EditorConfig is awesome: https://EditorConfig.org
 root = true
 
@@ -398,141 +405,126 @@ trim_trailing_whitespace = true
 indent_size = 4"
 ```
 
-### Configure CI with pre-commit hook
-
-MacOS & Linux:
-
-```bash
-# Add pre-commit hook
-echo "#!/bin/bash
-./vendor/bin/phpstan analyse || exit 1
-./vendor/bin/phpmd ./src,./tests text ./phpmd.xml || exit 1
-./vendor/bin/phpcs || exit 1
-php bin/console lint:twig ./templates || exit 1
-npx eslint ./assets/ts/**/*.ts || exit 1
-npx stylelint ./assets/css/**.*css || exit 1" | tee ./.git/hooks/pre-commit > /dev/null
-
-# Make pre-commit hook executable
-chmod -x ./.git/hooks/pre-commit
-```
-
-Windows:
-
-```powershell
-Set-Content ./.git/hooks/pre-commit "Try { ./vendor/bin/phpstan analyse } Catch { Exit 1 }
-Try { ./vendor/bin/phpmd ./src,./tests text ./phpmd.xml } Catch { Exit 1 }
-Try { ./vendor/bin/phpcs } Catch { Exit 1 }
-Try { php bin/console lint:twig ./templates } Catch { Exit 1 }
-Try { npx eslint ./assets/ts/**/*.ts } Catch { Exit 1 }
-Try { npx stylelint ./assets/css/**.*css } Catch { Exit 1 }"
-```
-
-### Configure CI with GitHub Actions
-
-```bash
-# Create GitHub Actions folder
-mkdir -p ./.github/workflows
-
-# Create a new "Lint" config
-echo "name: Lint project
-
-on: [pull_request]
-
-jobs:
-  phpstan:
-    runs-on: ubuntu-18.04
-    steps:
-    - uses: actions/checkout@v2
-    - name: Install deps
-      run: composer install
-    - name: Check code with PHP Stan
-      run: ./vendor/bin/phpstan analyse
-  phpcs:
-    runs-on: ubuntu-18.04
-    steps:
-    - uses: actions/checkout@v2
-    - name: Install deps
-      run: composer install
-    - name: Check code with PHP Code Sniffer
-      run: ./vendor/bin/phpcs
-  phpmd:
-    runs-on: ubuntu-18.04
-    steps:
-    - uses: actions/checkout@v2
-    - name: Install deps
-      run: composer install
-    - name: Check code with PHP Mess Detector
-      run: ./vendor/bin/phpmd ./src,./tests text ./phpmd.xml
-  symfonylint-yaml:
-    runs-on: ubuntu-18.04
-    steps:
-    - uses: actions/checkout@v2
-    - name: Install deps
-      run: composer install
-    - name: Check code with Yaml Symfony linter
-      run: php bin/console lint:yaml ./config
-  symfonylint-twig:
-    runs-on: ubuntu-18.04
-    steps:
-    - uses: actions/checkout@v2
-    - name: Install deps
-      run: composer install
-    - name: Check code with Twig Symfony linter
-      run: php bin/console lint:twig ./templates
-  eslint:
-    runs-on: ubuntu-18.04
-    steps:
-    - uses: actions/checkout@v2
-    - name: Install deps
-      run: yarn install
-    - name: Check code with ESLint
-      run: npx eslint ./assets/ts/**/*.ts
-  stylelint:
-    runs-on: ubuntu-18.04
-    steps:
-    - uses: actions/checkout@v2
-    - name: Install deps
-      run: yarn install
-    - name: Check code with StyleLint
-      run: npx stylelint ./assets/css/**/*.css" | tee ./.github/workflows/lint.yml > /dev/null
-```
-
 ## Usage
 
-### Fix errors automatically
+### Launch dev server
+
+[Back to top ↑](#table-of-contents)
 
 ```bash
-# PHP
-./vendor/bin/phpcbf
-
-# JS
-npx eslint ./assets/ts/**/*.ts --fix
-
-# CSS
-npx stylelint ./assets/css/**/*.css --fix
+symfony server:start
 ```
 
-### Lint the project manually
+### Watch assets changes
+
+[Back to top ↑](#table-of-contents)
 
 ```bash
-# Lint with PHPStan
-./vendor/bin/phpstan analyse
+yarn dev
+```
 
-# Lint with PHP Code Sniffer
+### Build assets for production
+
+[Back to top ↑](#table-of-contents)
+
+```bash
+yarn build
+```
+
+### Launch unit tests & functional tests
+
+[Back to top ↑](#table-of-contents)
+
+```bash
+php bin/phpunit
+```
+
+### Check coding style
+
+[Back to top ↑](#table-of-contents)
+
+```bash
+# Check PHP with PHP Code Sniffer
 ./vendor/bin/phpcs
 
-# Lint with PHP Mess Detector
+# Check Twig wih Prettier
+prettier --check "./templates/**/*.html.twig"
+
+# Check Yaml with Prettier
+prettier --check "{./config/**/*.yml,./phpstan.neon}"
+
+# Check XML with Prettier
+prettier --check "./*.xml"
+
+# Check JavaScript/TypeScript with Prettier
+prettier --check "{./assets/ts/**/*.ts,./webpack.config.js}"
+
+# Check JSON with Prettier
+prettier --check "./*.json"
+
+# Check CSS with Prettier
+prettier --check "./assets/css/**/*.css"
+```
+
+### Format code automatically
+
+[Back to top ↑](#table-of-contents)
+
+```bash
+# Format PHP with PHP Code Sniffer
+./vendor/bin/phpcbf
+
+# Format Twig with Prettier
+prettier --write "./templates/**/*.html.twig"
+
+# Format Yaml with Prettier
+prettier --write "{./config/**/*.yml,./phpstan.neon}"
+
+# Format XML with Prettier
+prettier --write "./*.xml"
+
+# Format TypeScript/JavaScript with Prettier
+prettier --write "{./assets/ts/**/*.ts,./webpack.config.js}"
+
+# Format JSON with Prettier
+prettier --write "./*.json"
+
+# Format CSS with Prettier
+prettier --write "./assets/css/**/*.css"
+```
+
+### Lint code for errors/bad practices
+
+[Back to top ↑](#table-of-contents)
+
+```bash
+# Lint PHP with PHPStan
+./vendor/bin/phpstan analyse
+
+# Lint PHP with PHP Mess Detector
 ./vendor/bin/phpmd ./src,./tests text ./phpmd.xml
 
-# Lint yaml with Symfony
-php bin/console lint:yaml ./config
-
-# Lint twig with Symfony
+# Lint Twig with Symfony
 php bin/console lint:twig ./templates
 
-# Lint TypeScript with ESLint
-npx eslint ./assets/ts/**/*.ts
+# Lint Yaml with Symfony
+php bin/console lint:yaml ./config
+
+# Lint TypeScript/JavaScrip with ESLint
+npx eslint "{./assets/ts/**/*.ts,./webpack.config.js}"
 
 # Lint CSS with StyleLint
 npx stylelint ./assets/css/**/*.css
+```
+
+### Execute database migrations
+
+[Back to top ↑](#table-of-contents)
+
+```bash
+# Generate migration script
+php bin/console doctrine:migrations:diff
+
+# Execute migrations
+php bin/console doctrine:migrations:migrate -n
 ```
