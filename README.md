@@ -17,7 +17,7 @@ On Windows, commands are meant to be executed on PowerShell.
   - [Install Webpack encore](#install-webpack-encore)
   - [Install JS dependencies](#install-js-dependencies)
   - [Install TypeScript](#install-typeScript)
-  - [Install PostCSS with Autoprefixer and PurgeCSS](#install-postcss-with-autoprefixer-and-purgecss]
+  - [Install PostCSS with Autoprefixer and PurgeCSS](#install-postcss-with-autoprefixer-and-purgecss)
   - [Install Prettier code formatter](#install-prettier-code-formatter)
   - [Install ESLint code linter with StandardJS rules](#install-eslint-code-linter-with-standardjs-rules)
   - [Install StyleLint code linter with Standard rules](#install-stylelint-code-linter-with-standard-rules)
