@@ -17,6 +17,7 @@ On Windows, commands are meant to be executed on PowerShell.
   - [Install Webpack encore](#install-webpack-encore)
   - [Install JS dependencies](#install-js-dependencies)
   - [Install TypeScript](#install-typeScript)
+  - [Install PostCSS with Autoprefixer and PurgeCSS](#install-postcss-with-autoprefixer-and-purgecss]
   - [Install Prettier code formatter](#install-prettier-code-formatter)
   - [Install ESLint code linter with StandardJS rules](#install-eslint-code-linter-with-standardjs-rules)
   - [Install StyleLint code linter with Standard rules](#install-stylelint-code-linter-with-standard-rules)
@@ -60,7 +61,7 @@ cd <my_project_name>
 [Back to top ↑](#table-of-contents)
 
 ```bash
-composer require --dev symfony/test-pack@~1.0.0
+composer require --dev symfony/test-pack:~1.0.0
 ```
 
 ### Install Webpack encore
@@ -89,6 +90,7 @@ Encore
   .enableSourceMaps(!Encore.isProduction())
   .enableVersioning(Encore.isProduction())
   .enableTypeScriptLoader()
+  .enablePostCssLoader()
 
 module.exports = Encore.getWebpackConfig()" | tee ./webpack.config.js > /dev/null
 
@@ -110,6 +112,7 @@ Encore
   .enableSourceMaps(!Encore.isProduction())
   .enableVersioning(Encore.isProduction())
   .enableTypeScriptLoader()
+  .enablePostCssLoader()
 
 module.exports = Encore.getWebpackConfig()"
 ```
@@ -172,7 +175,50 @@ Set-Content ./assets/ts/app.ts "import '../css/app.css'
 console.log('Hello Webpack Encore! Edit me in assets/ts/app.ts')"
 ```
 
-### Install Prettier code formatter
+### Install PostCSS with Autoprefixer and PurgeCSS
+
+[Back to top ↑](#table-of-contents)
+
+```bash
+# Install
+yarn add -D postcss@~7.0.0 autoprefixer@~9.7.0 purgecss@~2.1.0 @fullhuman/postcss-purgecss@~2.1.0
+
+# Configuration (MacOS & Ubuntu)
+echo "const config = {
+  plugins: [
+    require('autoprefixer')
+  ]
+}
+
+if (process.env.NODE_ENV === 'production') {
+  config.plugins = [
+    ...config.plugins,
+    require('@fullhuman/postcss-purgecss')({
+      content: ['./templates/**/*.html.twig']
+    })
+  ]
+}
+
+module.exports = config" | tee ./postcss.config.js > /dev/null
+
+# Configuration (Windows)
+Set-Content ./postcss.config.js "const config = {
+  plugins: [
+    require('autoprefixer')
+  ]
+}
+
+if (process.env.NODE_ENV === 'production') {
+  config.plugins = [
+    ...config.plugins,
+    require('@fullhuman/postcss-purgecss')({
+      content: ['./templates/**/*.html.twig']
+    })
+  ]
+}
+
+module.exports = config"
+```
 
 [Back to top ↑](#table-of-contents)
 
