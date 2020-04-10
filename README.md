@@ -4,9 +4,7 @@
 
 **These instructions are part of the [symfony-dev-deploy](https://github.com/RomainFallet/symfony-dev-deploy) repository.**
 
-The purpose of this repository is to provide instructions to create and configure a new Symfony app from scratch with appropriate linters, assets bundler, editor config, testing utilities, continuous integration & continuous delivery on Ubuntu, macOS and Windows.
-
-On Windows, commands are meant to be executed on PowerShell.
+The purpose of this repository is to provide instructions to create and configure a new Symfony app from scratch with appropriate linters, assets bundler, editor config, testing utilities, continuous integration.
 
 ## Table of contents
 
