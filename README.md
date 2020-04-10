@@ -8,6 +8,7 @@ The purpose of this repository is to provide instructions to create and configur
 
 ## Table of contents
 
+- [Prerequisites](#prerequisites)
 - [Quickstart](#quickstart)
 - [Manual configuration](#manual-configuration)
   - [Create a new app with Symfony CLI](#create-a-new-app-with-symfony-cli)
@@ -33,6 +34,16 @@ The purpose of this repository is to provide instructions to create and configur
   - [Format code automatically](#format-code-automatically)
   - [Lint code for errors/bad practices](#lint-code-for-errorsbad-practices)
   - [Execute database migrations](#execute-database-migrations)
+
+## Prerequisites
+
+- Git v2
+- Symfony CLI v4
+- PHP v7.3
+- Composer v1.9
+- MariaDB v10.4
+- NodeJS v12
+- Yarn v1.21
 
 ## Quickstart
 
