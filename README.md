@@ -11,12 +11,11 @@ The purpose of this repository is to provide instructions to create and configur
 - [Prerequisites](#prerequisites)
 - [Quickstart](#quickstart)
 - [Manual configuration](#manual-configuration)
-  - [Create a new app with Symfony CLI](#create-a-new-app-with-symfony-cli)
-  - [Install Symfony testing utilities](#install-symfony-testing-utilities)
+  - [Init the project](#init-the-project)
+  - [Install Panther & testing utilities](#install-symfony-testing-utilities)
   - [Install Webpack encore](#install-webpack-encore)
-  - [Install JS dependencies](#install-js-dependencies)
-  - [Install TypeScript](#install-typeScript)
-  - [Install PostCSS with Autoprefixer and PurgeCSS](#install-postcss-with-autoprefixer-and-purgecss)
+  - [Install TypeScript JS compiler](#install-typeScript-js-compiler)
+  - [Install PostCSS CSS compiler with preset-env and PurgeCSS](#install-postcss-css-compiler-with-preset-env-and-purgecss)
   - [Install Prettier code formatter](#install-prettier-code-formatter)
   - [Install ESLint code linter with StandardJS rules](#install-eslint-code-linter-with-standardjs-rules)
   - [Install StyleLint code linter with Standard rules](#install-stylelint-code-linter-with-standard-rules)
@@ -48,29 +47,100 @@ The purpose of this repository is to provide instructions to create and configur
 ## Quickstart
 
 ```bash
+# Clone repo
 git clone https://github.com/RomainFallet/symfony-starter
+
+# Install dependencies
+composer install && yarn install
+
+# Create database (replace <dbname>)
+# (Add "sudo" before "mysql" command on macOS and Ubuntu)
+mysql -e "CREATE DATABASE <dbname>;"
+
+# Create a user
+# (replace <username>, <password>)
+# (Add "sudo" before "mysql" command on macOS and Ubuntu)
+mysql -e "CREATE USER <username>@localhost IDENTIFIED BY '<password>';"
+
+# Grant him access to the db (replace <dbname> and <user>)
+# (Add "sudo" before "mysql" command on macOS and Ubuntu)
+mysql -e "GRANT ALL ON <dbname>.* TO <username>@localhost;"
+
+# Load fixtures
+php bin/console doctrine:fixtures:load
+```
+
+Then, copy the "./.env" file to "./.env.local" and replace variables:
+
+```text
+DATABASE_URL=mysql://<username>:<password>@127.0.0.1:3306/<dbname>
 ```
 
 ## Manual configuration
 
-### Create a new app with Symfony CLI
+### Init the project
 
 [Back to top ↑](#table-of-contents)
 
 ```bash
 # Create the project
-symfony new <my_project_name> --version=~5.0.0 --full
+symfony new --version=~5.0.0 --full ./<my_project_name>
 
 # Go inside the project
-cd <my_project_name>
+cd ./<my_project_name>
 ```
 
-### Install Symfony testing utilities
+By default, packages versions are not set properly, update your "./composer.json" to match these:
+
+```json
+  "require": {
+      "php": "~7.3.0",
+      "ext-ctype": "*",
+      "ext-iconv": "*",
+      "sensio/framework-extra-bundle": "~5.5.0",
+      "symfony/asset": "~5.0.0",
+      "symfony/console": "~5.0.0",
+      "symfony/dotenv": "~5.0.0",
+      "symfony/expression-language": "~5.0.0",
+      "symfony/flex": "~1.6.0",
+      "symfony/form": "~5.0.0",
+      "symfony/framework-bundle": "~5.0.0",
+      "symfony/http-client": "~5.0.0",
+      "symfony/intl": "~5.0.0",
+      "symfony/mailer": "~5.0.0",
+      "symfony/monolog-bundle": "~3.5.0",
+      "symfony/notifier": "~5.0.0",
+      "symfony/orm-pack": "~1.0.0",
+      "symfony/process": "~5.0.0",
+      "symfony/security-bundle": "~5.0.0",
+      "symfony/serializer-pack": "~1.0.0",
+      "symfony/string": "~5.0.0",
+      "symfony/translation": "~5.0.0",
+      "symfony/twig-pack": "~1.0.0",
+      "symfony/validator": "~5.0.0",
+      "symfony/web-link": "~5.0.0",
+      "symfony/yaml": "~5.0.0"
+  },
+  "require-dev": {
+      "symfony/debug-pack": "~1.0.0",
+      "symfony/maker-bundle": "~1.15.0",
+      "symfony/profiler-pack": "~1.0.0",
+      "symfony/test-pack": "~1.0.0"
+  },
+```
+
+Then, remove "./composer-lock.json" and "./vendor" files and reinstall deps:
+
+```bash
+composer install
+```
+
+### Install Panther & testing utilities
 
 [Back to top ↑](#table-of-contents)
 
 ```bash
-composer require --dev symfony/test-pack:~1.0.0
+composer require --dev symfony/panther:~0.7.0
 ```
 
 ### Install Webpack encore
@@ -78,156 +148,101 @@ composer require --dev symfony/test-pack:~1.0.0
 [Back to top ↑](#table-of-contents)
 
 ```bash
-# Install
 composer require --dev symfony/webpack-encore-bundle:~1.7.0
-
-# Configuraton (MacOS & Ubuntu)
-echo "const Encore = require('@symfony/webpack-encore')
-
-if (!Encore.isRuntimeEnvironmentConfigured()) {
-  Encore.configureRuntimeEnvironment(process.env.NODE_ENV || 'dev')
-}
-
-Encore
-  .setOutputPath('public/build/')
-  .setPublicPath('/build')
-  .addEntry('app', './assets/ts/app.ts')
-  .splitEntryChunks()
-  .enableSingleRuntimeChunk()
-  .cleanupOutputBeforeBuild()
-  .enableBuildNotifications()
-  .enableSourceMaps(!Encore.isProduction())
-  .enableVersioning(Encore.isProduction())
-  .enableTypeScriptLoader()
-  .enablePostCssLoader()
-
-module.exports = Encore.getWebpackConfig()" | tee ./webpack.config.js > /dev/null
-
-# Configuration (Windows)
-Set-Content ./webpack.config.js "const Encore = require('@symfony/webpack-encore')
-
-if (!Encore.isRuntimeEnvironmentConfigured()) {
-  Encore.configureRuntimeEnvironment(process.env.NODE_ENV || 'dev')
-}
-
-Encore
-  .setOutputPath('public/build/')
-  .setPublicPath('/build')
-  .addEntry('app', './assets/ts/app.ts')
-  .splitEntryChunks()
-  .enableSingleRuntimeChunk()
-  .cleanupOutputBeforeBuild()
-  .enableBuildNotifications()
-  .enableSourceMaps(!Encore.isProduction())
-  .enableVersioning(Encore.isProduction())
-  .enableTypeScriptLoader()
-  .enablePostCssLoader()
-
-module.exports = Encore.getWebpackConfig()"
 ```
 
-### Install JS dependencies
+Edit the "./webpack.config.js" file like this:
 
-[Back to top ↑](#table-of-contents)
+```javascript
+const Encore = require('@symfony/webpack-encore')
+
+if (!Encore.isRuntimeEnvironmentConfigured()) {
+  Encore.configureRuntimeEnvironment(process.env.NODE_ENV || 'dev')
+}
+
+Encore
+  .setOutputPath('public/build/')
+  .setPublicPath('/build')
+  .addEntry('app', './assets/ts/app.ts')
+  .splitEntryChunks()
+  .enableSingleRuntimeChunk()
+  .cleanupOutputBeforeBuild()
+  .enableBuildNotifications()
+  .enableSourceMaps(!Encore.isProduction())
+  .enableVersioning(Encore.isProduction())
+  .enableTypeScriptLoader()
+  .enablePostCssLoader()
+
+module.exports = Encore.getWebpackConfig()
+```
+
+Install JS dependencies:
 
 ```bash
 yarn install
 ```
 
-### Install TypeScript
+### Install TypeScript JS compiler
 
 [Back to top ↑](#table-of-contents)
 
 ```bash
-# Install
 yarn add -D typescript@~3.7.0 ts-loader@~5.3.0
-
-# Configuration (MacOS & Ubuntu)
-echo '{
-  "compilerOptions": {
-    "target": "ES2015",
-    "module": "ES2015",
-    "moduleResolution": "node",
-    "strict": true,
-    "sourceMap": true,
-    "noUnusedLocals": true
-  },
-  "include": ["./assets/ts/**/*.ts"]
-}' | tee ./tsconfig.json > /dev/null
-
-
-mkdir ./assets/ts
-
-rm -rf ./assets/js
-
-echo "import '../css/app.css'
-console.log('Hello Webpack Encore! Edit me in assets/ts/app.ts')" | tee ./assets/ts/app.ts > /dev/null
-
-# Configuration (Windows)
-Set-Content ./webpack.config.js '{
-  "compilerOptions": {
-    "target": "ES2015",
-    "module": "ES2015",
-    "moduleResolution": "node",
-    "strict": true,
-    "sourceMap": true,
-    "noUnusedLocals": true
-  },
-  "include": ["./assets/ts/**/*.ts"]
-}'
-
-New-Item -ItemType Directory -Force -Path ./assets/ts
-
-Remove-Item -Recurse -Force ./assets/js
-
-Set-Content ./assets/ts/app.ts "import '../css/app.css'
-console.log('Hello Webpack Encore! Edit me in assets/ts/app.ts')"
 ```
 
-### Install PostCSS with Autoprefixer and PurgeCSS
+Create a new "./tsconfig.json" file:
+
+```json
+{
+  "compilerOptions": {
+    "target": "ES2015",
+    "module": "ES2015",
+    "moduleResolution": "node",
+    "strict": true,
+    "sourceMap": true,
+    "noUnusedLocals": true
+  },
+  "include": ["./assets/ts/**/*.ts"]
+}
+```
+
+Create a new "./assets/ts/app.ts" file:
+
+```javascript
+import '../css/app.css'
+console.log('Hello Webpack Encore! Edit me in assets/ts/app.ts')
+```
+
+Remove "./assets/js" folder.
+
+### Install PostCSS CSS compiler with preset-env and PurgeCSS
 
 [Back to top ↑](#table-of-contents)
 
 ```bash
-# Install
-yarn add -D postcss@~7.0.0 autoprefixer@~9.7.0 purgecss@~2.1.0 @fullhuman/postcss-purgecss@~2.1.0
-
-# Configuration (MacOS & Ubuntu)
-echo "const config = {
-  plugins: [
-    require('autoprefixer')
-  ]
-}
-
-if (process.env.NODE_ENV === 'production') {
-  config.plugins = [
-    ...config.plugins,
-    require('@fullhuman/postcss-purgecss')({
-      content: ['./templates/**/*.html.twig']
-    })
-  ]
-}
-
-module.exports = config" | tee ./postcss.config.js > /dev/null
-
-# Configuration (Windows)
-Set-Content ./postcss.config.js "const config = {
-  plugins: [
-    require('autoprefixer')
-  ]
-}
-
-if (process.env.NODE_ENV === 'production') {
-  config.plugins = [
-    ...config.plugins,
-    require('@fullhuman/postcss-purgecss')({
-      content: ['./templates/**/*.html.twig']
-    })
-  ]
-}
-
-module.exports = config"
+yarn add -D postcss@~7.0.0 purgecss@~2.1.0 @fullhuman/postcss-purgecss@~2.1.0 postcss-preset-env@~6.7.0
 ```
+
+Create a new "./src/postcss.config.js" file:
+
+```javascript
+const config = {
+  plugins: [
+    require('postcss-preset-env')
+  ]
+}
+
+if (process.env.NODE_ENV === 'production') {
+  config.plugins = [
+    ...config.plugins,
+    require('@fullhuman/postcss-purgecss')({
+      content: ['./templates/**/*.html.twig']
+    })
+  ]
+}
+```
+
+## Install Prettier code formatter
 
 [Back to top ↑](#table-of-contents)
 
