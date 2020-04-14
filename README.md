@@ -50,6 +50,9 @@ The purpose of this repository is to provide instructions to create and configur
 # Clone repo
 git clone https://github.com/RomainFallet/symfony-starter
 
+# Go inside the project
+cd ./symfony-starter
+
 # Install dependencies
 composer install && yarn install
 
