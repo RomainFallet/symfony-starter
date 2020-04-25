@@ -12,16 +12,17 @@ The purpose of this repository is to provide instructions to create and configur
 - [Quickstart](#quickstart)
 - [Manual configuration](#manual-configuration)
   - [Init the project](#init-the-project)
-  - [Install Panther & testing utilities](#install-symfony-testing-utilities)
   - [Install Webpack encore](#install-webpack-encore)
   - [Install TypeScript JS compiler](#install-typeScript-js-compiler)
   - [Install PostCSS CSS compiler with preset-env and PurgeCSS](#install-postcss-css-compiler-with-preset-env-and-purgecss)
   - [Install Prettier code formatter](#install-prettier-code-formatter)
   - [Install ESLint code linter with StandardJS rules](#install-eslint-code-linter-with-standardjs-rules)
   - [Install StyleLint code linter with Standard rules](#install-stylelint-code-linter-with-standard-rules)
+  - [Install MarkdownLint code linter](#install-markdownLint-code-linter)
   - [Install PHP Code Sniffer code formatter with PSR rules](#install-php-code-sniffer-code-formatter-with-psr-rules)
   - [Install PHP Stan code linter](#install-php-stan-code-linter)
   - [Install PHP Mess Detector coder linter](#install-php-mess-detector-code-linter)
+  - [Install XMLLint code linter](#install-xmllint)
   - [Configure .gitignore](#configure-gitignore)
   - [Configure .editorconfig](#configure-editorconfig)
 - [Usage](#usage)
@@ -29,7 +30,7 @@ The purpose of this repository is to provide instructions to create and configur
   - [Watch assets changes](#watch-assets-changes)
   - [Build assets for production](#build-assets-for-production)
   - [Launch unit tests & functional tests](#launch-unit-tests--functional-tests)
-  - [Check coding style](#check-coding-style)
+  - [Check coding style & lint code for errors/bad practices](#check-coding-style--lint-code-for-errorsbad-practices)
   - [Format code automatically](#format-code-automatically)
   - [Lint code for errors/bad practices](#lint-code-for-errorsbad-practices)
   - [Execute database migrations](#execute-database-migrations)
@@ -138,14 +139,6 @@ Then, remove "./composer-lock.json" and "./vendor" files and reinstall deps:
 composer install
 ```
 
-### Install Panther & testing utilities
-
-[Back to top ↑](#table-of-contents)
-
-```bash
-composer require --dev symfony/panther:~0.7.0
-```
-
 ### Install Webpack encore
 
 [Back to top ↑](#table-of-contents)
@@ -190,7 +183,11 @@ yarn install
 [Back to top ↑](#table-of-contents)
 
 ```bash
-yarn add -D typescript@~3.7.0 ts-loader@~5.3.0
+# Install TypeScript
+yarn add -D typescript@~3.7.0
+
+# Install TypeScript loader for Webpack
+yarn add -D ts-loader@~5.3.0
 ```
 
 Create a new "./tsconfig.json" file:
@@ -212,7 +209,7 @@ Create a new "./tsconfig.json" file:
 Create a new "./assets/ts/app.ts" file:
 
 ```javascript
-import '../css/app.css'
+import './../css/app.css'
 console.log('Hello Webpack Encore! Edit me in assets/ts/app.ts')
 ```
 
@@ -223,7 +220,17 @@ Remove "./assets/js" folder.
 [Back to top ↑](#table-of-contents)
 
 ```bash
-yarn add -D postcss@~7.0.0 purgecss@~2.1.0 @fullhuman/postcss-purgecss@~2.1.0 postcss-preset-env@~6.7.0
+# Install PostCSS
+yarn add -D postcss@~7.0.0
+
+# Install PostCSS preset env
+yarn add -D postcss-preset-env@~6.7.0
+
+# Install PurgeCSS
+yarn add -D purgecss@~2.1.0
+
+# Install PurgeCSS plugin for PostCSS
+yarn add -D @fullhuman/postcss-purgecss@~2.1.0
 ```
 
 Create a new "./src/postcss.config.js" file:
@@ -245,12 +252,36 @@ if (process.env.NODE_ENV === 'production') {
 }
 ```
 
+Add this to `./package.json` file:
+
+```json
+  "browserslist": [
+    "> 0.5%",
+    "last 2 versions",
+    "Firefox ESR",
+    "not dead",
+    "not IE 11",
+    "not IE_Mob 11",
+    "not op_mini all"
+  ]
+```
+
 ## Install Prettier code formatter
 
 [Back to top ↑](#table-of-contents)
 
 ```bash
-yarn add -D prettier@~2.0.0 eslint-plugin-prettier@~3.1.0 eslint-config-prettier@~6.10.0 prettier-config-standard@~1.0.0 stylelint-config-prettier@~8.0.0 prettier-plugin-twig-melody@~0.4.0 @prettier/plugin-xml@~0.7.0
+# Install Prettier
+yarn add -D prettier@~2.0.0
+
+# Install Twig plugin
+yarn add -D prettier-plugin-twig-melody@~0.4.0
+
+# Install XML plugin
+yarn add -D @prettier/plugin-xml@~0.7.0
+
+# Install StandardJS config
+yarn add -D prettier-config-standard@~1.0.0
 ```
 
 ### Install ESLint code linter with StandardJS rules
@@ -258,30 +289,43 @@ yarn add -D prettier@~2.0.0 eslint-plugin-prettier@~3.1.0 eslint-config-prettier
 [Back to top ↑](#table-of-contents)
 
 ```bash
-# Install
-yarn add -D eslint@~6.8.0 eslint-plugin-standard@~4.0.0 eslint-plugin-promise@~4.2.0 eslint-plugin-import@~2.20.0 eslint-plugin-node@~11.0.0 @typescript-eslint/eslint-plugin@~2.23.0 eslint-config-standard-with-typescript@~14.0.0
+# Install ESLint
+yarn add -D eslint@~6.8.0
 
-# Configuration (MacOS & Ubuntu)
-echo '{
+# Install ESLint default plugins
+yarn add -D eslint-plugin-promise@~4.2.0 eslint-plugin-import@~2.20.0 eslint-plugin-node@~11.1.0
+
+# Install TypeScript plugin
+yarn add -D @typescript-eslint/eslint-plugin@~2.23.0
+
+# Install Prettier plugin
+yarn add -D eslint-plugin-prettier@~3.1.0
+
+# Install StandardJS plugin
+yarn add -D eslint-plugin-standard@~4.0.0
+
+# Install StandardJS with TypeScript configuration
+yarn add -D eslint-config-standard-with-typescript@~14.0.0
+
+# Install Prettier configuration
+yarn add -D eslint-config-prettier@~6.10.0
+
+# Install Prettier with StandardJS configuration
+yarn add -D eslint-config-prettier-standard@~3.0.0
+```
+
+Create a new `./.eslintrc.json` file:
+
+```json
+{
   "extends": [
     "standard-with-typescript",
     "prettier-standard"
   ],
   "parserOptions": {
-      "project": "./tsconfig.json"
+    "project": "./tsconfig.json"
   }
-}' | tee ./.eslintrc.json > /dev/null
-
-# Configuration (Windows)
-Set-Content ./.eslintrc.json '{
-  "extends": [
-    "standard-with-typescript",
-    "prettier-standard"
-  ],
-  "parserOptions": {
-      "project": "./tsconfig.json"
-  }
-}'
+}
 ```
 
 ### Install StyleLint code linter with Standard rules
@@ -289,24 +333,40 @@ Set-Content ./.eslintrc.json '{
 [Back to top ↑](#table-of-contents)
 
 ```bash
-# Install
-yarn add -D stylelint@~13.0.0 stylelint-config-standard@~19.0.0
+# Install StyleLint
+yarn add -D stylelint@~13.0.0
 
-# Configuration (MacOS & Ubuntu)
-echo '{
-  "extends": [
-    "stylelint-config-standard",
-    "stylelint-config-prettier"
-  ]
-}' | tee ./.stylelintrc.json > /dev/null
+# Install Standard configuration
+yarn add -D stylelint-config-standard@~19.0.0
 
-# Configuration (Windows)
-Set-Content ./.stylelintrc.jso '{
-  "extends": [
-    "stylelint-config-standard",
-    "stylelint-config-prettier"
-  ]
-}'
+# Install Prettier configuration
+yarn add -D stylelint-config-prettier@~8.0.0
+```
+
+Create a new  `./.stylelintrc.json`:
+
+```bash
+{
+  "extends": ["stylelint-config-standard", "stylelint-config-prettier"]
+}
+```
+
+Add these scripts to  `./package.json` file:
+
+### Install MarkdownLint code linter
+
+[Back to top ↑](#table-of-contents)
+
+```bash
+yarn add -D markdownlint@~0.19.0 markdownlint-cli@~0.22.0
+```
+
+Create a new  `./.markdownlint.json` file:
+
+```json
+{
+  "default": true
+}
 ```
 
 ### Install PHP Code Sniffer code formatter with PSR rules
@@ -314,11 +374,13 @@ Set-Content ./.stylelintrc.jso '{
 [Back to top ↑](#table-of-contents)
 
 ```bash
-# Install
 composer require --dev -n squizlabs/php_codesniffer:~3.5.0
+```
 
-# Configuration (MacOS & Ubuntu)
-echo '<?xml version="1.0" encoding="UTF-8"?>
+Create a new `./phpcs.xml` file:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
 <ruleset
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:noNamespaceSchemaLocation="vendor/squizlabs/php_codesniffer/phpcs.xsd"
@@ -334,26 +396,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>
   <rule ref="PSR1" />
   <file>src/</file>
   <file>tests/</file>
-</ruleset>' | tee ./phpcs.xml > /dev/null
-
-# Configuration (Windows)
-Set-Content ./phpcs.xml '<?xml version="1.0" encoding="UTF-8"?>
-<ruleset
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:noNamespaceSchemaLocation="vendor/squizlabs/php_codesniffer/phpcs.xsd"
->
-  <arg name="basepath" value="." />
-  <arg name="cache" value=".phpcs-cache" />
-  <arg name="colors" />
-  <arg name="extensions" value="php" />
-  <rule ref="PSR12" />
-  <rule ref="PSR1" />
-  <rule ref="Generic.Files.LineEndings.InvalidEOLChar">
-    <message>End of line character is invalid.</message>
-  </rule>
-  <file>src/</file>
-  <file>tests/</file>
-</ruleset>'
+</ruleset>
 ```
 
 ### Install PHP Stan code linter
@@ -361,22 +404,17 @@ Set-Content ./phpcs.xml '<?xml version="1.0" encoding="UTF-8"?>
 [Back to top ↑](#table-of-contents)
 
 ```bash
-# Install
 composer require --dev phpstan/phpstan:~0.12.0 phpstan/phpstan-doctrine:~0.12.0 phpstan/phpstan-symfony:~0.12.0
+```
 
-# Configuration (MacOS & Ubuntu)
-echo "parameters:
+Create a new `./phpstan.neon` file:
+
+```yml
+parameters:
   paths:
       - ./src
       - ./tests
-  level: max" | tee ./phpstan.neon > /dev/null
-
-# Configuration (Windows)
-Set-Content ./phpstan.neon  "parameters:
-  paths:
-      - ./src
-      - ./tests
-  level: max"
+  level: max
 ```
 
 ### Install PHP Mess Detector code linter
@@ -384,11 +422,13 @@ Set-Content ./phpstan.neon  "parameters:
 [Back to top ↑](#table-of-contents)
 
 ```bash
-# Install
 composer require --dev phpmd/phpmd:~2.8.0
+```
 
-# Configuration (MacOS & Ubuntu)
-echo '<?xml version="1.0" encoding="UTF-8" ?>
+Create a new `./phpmd.xml` file:
+
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
 <ruleset name="PHPMD rule set"
   xmlns="http://pmd.sf.net/ruleset/1.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -405,50 +445,125 @@ echo '<?xml version="1.0" encoding="UTF-8" ?>
   <rule ref="rulesets/design.xml"></rule>
   <rule ref="rulesets/naming.xml"></rule>
   <rule ref="rulesets/unusedcode.xml"></rule>
-</ruleset>' | tee ./phpmd.xml > /dev/null
+</ruleset>
+```
 
-# Configuration (Windows)
-Set-Content ./phpmd.xml '<?xml version="1.0" encoding="UTF-8" ?>
-<ruleset name="PHPMD rule set"
-  xmlns="http://pmd.sf.net/ruleset/1.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://pmd.sf.net/ruleset/1.0.0
-  http://pmd.sf.net/ruleset_xml_schema.xsd"
-  xsi:noNamespaceSchemaLocation="
-  http://pmd.sf.net/ruleset_xml_schema.xsd"
->
-  <rule ref="rulesets/cleancode.xml"></rule>
-  <rule ref="rulesets/codesize.xml"></rule>
-  <rule ref="rulesets/controversial.xml">
-      <exclude name="Superglobals" />
-  </rule>
-  <rule ref="rulesets/design.xml"></rule>
-  <rule ref="rulesets/naming.xml"></rule>
-  <rule ref="rulesets/unusedcode.xml"></rule>
-</ruleset>'
+### Install XML-Lint code linter
+
+Add this to your `./composer.json` file:
+
+```json
+  "repositories": [{
+    "type": "vcs",
+    "url": "https://github.com/RomainFallet/xml-lint"
+  }]
+```
+
+Then, you can install it:
+
+```bash
+composer require --dev sclable/xml-lint:dev-master
+```
+
+
+### Install scripts
+
+[Back to top ↑](#table-of-contents)
+
+```bash
+yarn add -D npm-run-all@~4.1.5
+```
+
+Add these scripts to  `./package.json` file:
+
+```json
+  "scripts": {
+    "lint": "npm-run-all lint:*",
+    "lint:php": "./vendor/bin/phpstan analyse && ./vendor/bin/phpmd ./src,./tests text ./phpmd.xml && ./vendor/bin/phpcs",
+    "lint:twig": "php bin/console lint:twig ./templates && prettier --check \"./templates/**/*.html.twig\"",
+    "lint:yml": "php bin/console lint:yaml ./config && prettier --check \"{./config/**/*.yml,./phpstan.neon}\"",
+    "lint:xml": "./vendor/bin/xmllint -r 0 ./ && prettier --check \"./*.xml\"",
+    "lint:ts": "eslint \"./assets/ts/**/*.ts\"",
+    "lint:css": "stylelint \"./assets/css/**/*.css\" && prettier --check \"./assets/css/**/*.css\"",
+    "lint:json": "prettier --check \"./*.json\"",
+    "lint:md": "markdownlint \"./*.md\"",
+    "format": "npm-run-all format:*",
+    "format:php": "./vendor/bin/phpcbf",
+    "format:twig": "prettier --write \"./templates/**/*.html.twig\"",
+    "format:yml": "prettier --write \"{./config/**/*.yml,./phpstan.neon}\"",
+    "format:xml": "prettier --write \"./*.xml\"",
+    "format:ts": "eslint --fix \"./assets/ts/**/*.ts\"",
+    "format:css": "stylelint --fix \"./**/*.css\" && prettier --write \"./assets/css/**/*.css\"",
+    "format:json": "prettier --write \"./*.json\"",
+    "format:md": "markdownlint --fix \"./*.md\"",
+  }
+```
+
+### Configure CI with git hooks through Husky
+
+[Back to top ↑](#table-of-contents)
+
+```bash
+yarn add -D husky@~4.2.0 lint-staged@~10.1.0
+```
+
+Add this to your `./package.json` file :
+
+```json
+  "lint-staged": {
+    "./{src,tests}/**/*.php": [
+      "./vendor/bin/phpstan analyse",
+      "./vendor/bin/phpmd text ./phpmd.xml"
+      "./vendor/bin/phpcs"
+    ],
+    "./templates/**/*.html.twig": [
+      "php bin/console lint:twig"
+    ],
+    "{./config/**/*.yml,./phpstan.neon}": [
+      "php bin/console lint:yaml"
+    ],
+    "./*.xml": [
+      "./vendor/bin/xmllint -r 0"
+    ],
+    "./assets/ts/**/*.ts": [
+      "eslint",
+    ],
+    "./assets/css/**/*.css": [
+      "stylelint"
+    ],
+    "./*.md": [
+      "markdownlint"
+    ],
+    "{./templates/**/*.html.twig,./config/**/*.yml,./phpstan.neon,./*.xml,./assets/css/**/*.css,./*.json}": [
+      "prettier --check"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  }
 ```
 
 ### Configure .gitignore
 
 [Back to top ↑](#table-of-contents)
 
-```bash
-# Configuration (MacOS & Ubuntu)
-echo ".phpcs-cache
-src/Migrations"
+Add these lines to `./.gitignore` file:
 
-# Configuration (Windows)
-Add-Content ./.gitignore ".phpcs-cache
-src/Migrations"
+```text
+.phpcs-cache
+src/Migrations
 ```
 
 ### Configure .editorconfig
 
 [Back to top ↑](#table-of-contents)
 
-```bash
-# Configuration (MacOS & Ubuntu)
-echo "# EditorConfig is awesome: https://EditorConfig.org
+Create a new `./.editorconfig` file :
+
+```text
+# EditorConfig is awesome: https://EditorConfig.org
 root = true
 
 [*]
@@ -460,22 +575,7 @@ indent_size = 2
 trim_trailing_whitespace = true
 
 [*.php]
-indent_size = 4" | tee ./.editorconfig > /dev/null
-
-# Configuration (Windows)
-Set-Content ./.editorconfig "# EditorConfig is awesome: https://EditorConfig.org
-root = true
-
-[*]
-end_of_line = lf
-insert_final_newline = true
-charset = utf-8
-indent_style = space
-indent_size = 2
-trim_trailing_whitespace = true
-
-[*.php]
-indent_size = 4"
+indent_size = 4
 ```
 
 ## Usage
@@ -512,31 +612,37 @@ yarn build
 php bin/phpunit
 ```
 
-### Check coding style
+### Check coding style & lint code for errors/bad practices
 
 [Back to top ↑](#table-of-contents)
 
 ```bash
-# Check PHP with PHP Code Sniffer
-./vendor/bin/phpcs
+# Check all files
+yarn lint
 
-# Check Twig wih Prettier
-prettier --check "./templates/**/*.html.twig"
+# Check PHP with PHPStan, PHP Mess Detector and PHP Code Sniffer
+yarn lint:php
 
-# Check Yaml with Prettier
-prettier --check "{./config/**/*.yml,./phpstan.neon}"
+# Check Twig with Symfony and Prettier (Standard rules)
+yarn lint:twig
 
-# Check XML with Prettier
-prettier --check "./*.xml"
+# Check Yaml with Symfony and Prettier
+yarn lint:yml
 
-# Check JavaScript/TypeScript with Prettier
-prettier --check "{./assets/ts/**/*.ts,./webpack.config.js}"
+# Check XML with XML-Lint and Prettier
+yarn lint:xml
+
+# Check TypeScript with ESLint (Prettier + StandardJS rules)
+yarn lint:ts
+
+# Check CSS with StyleLint (Standard rules) and Prettier
+yarn lint:css
 
 # Check JSON with Prettier
-prettier --check "./*.json"
+yarn lint:json
 
-# Check CSS with Prettier
-prettier --check "./assets/css/**/*.css"
+# Check Markdown with MarkdownLint
+yarn lint:md
 ```
 
 ### Format code automatically
@@ -544,50 +650,32 @@ prettier --check "./assets/css/**/*.css"
 [Back to top ↑](#table-of-contents)
 
 ```bash
+# Format all files
+yarn lint
+
 # Format PHP with PHP Code Sniffer
-./vendor/bin/phpcbf
+yarn format:php
 
-# Format Twig with Prettier
-prettier --write "./templates/**/*.html.twig"
+# Format Twig Prettier (Standard rules)
+yarn format:twig
 
-# Format Yaml with Prettier
-prettier --write "{./config/**/*.yml,./phpstan.neon}"
+# Format Yaml Prettier
+yarn format:yml
 
 # Format XML with Prettier
-prettier --write "./*.xml"
+yarn format:xml
 
-# Format TypeScript/JavaScript with Prettier
-prettier --write "{./assets/ts/**/*.ts,./webpack.config.js}"
+# Format TypeScript with ESLint (Prettier + StandardJS rules)
+yarn format:ts
+
+# Format CSS with StyleLint (Standard rules) and Prettier
+yarn format:css
 
 # Format JSON with Prettier
-prettier --write "./*.json"
+yarn format:json
 
-# Format CSS with Prettier
-prettier --write "./assets/css/**/*.css"
-```
-
-### Lint code for errors/bad practices
-
-[Back to top ↑](#table-of-contents)
-
-```bash
-# Lint PHP with PHPStan
-./vendor/bin/phpstan analyse
-
-# Lint PHP with PHP Mess Detector
-./vendor/bin/phpmd ./src,./tests text ./phpmd.xml
-
-# Lint Twig with Symfony
-php bin/console lint:twig ./templates
-
-# Lint Yaml with Symfony
-php bin/console lint:yaml ./config
-
-# Lint TypeScript/JavaScrip with ESLint
-npx eslint "{./assets/ts/**/*.ts,./webpack.config.js}"
-
-# Lint CSS with StyleLint
-npx stylelint ./assets/css/**/*.css
+# Format Markdown with MarkdownLint
+yarn format:md
 ```
 
 ### Execute database migrations
