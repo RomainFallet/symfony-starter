@@ -4,7 +4,7 @@
 
 **These instructions are part of the [symfony-dev-deploy](https://github.com/RomainFallet/symfony-dev-deploy) repository.**
 
-The purpose of this repository is to provide instructions to create and configure a new Symfony app from scratch with appropriate linters, assets bundler, editor config, testing utilities, continuous integration.
+The purpose of this repository is to provide instructions to create and configure a new Symfony app from scratch with appropriate linters, assets bundler, editor config, testing utilities, continuous integration and continuous delivery.
 
 ## Table of contents
 
@@ -25,6 +25,9 @@ The purpose of this repository is to provide instructions to create and configur
   - [Install XMLLint code linter](#install-xmllint)
   - [Configure .gitignore](#configure-gitignore)
   - [Configure .editorconfig](#configure-editorconfig)
+  - [Configure CI with Git hooks](#configure-ci-with-git-hooks)
+  - [Configure CI with GitHub Actions](#configure-ci-with-github-actions)
+  - [Integrate formatters, linters & syntax to VSCode](#integrate-formatters-linters--syntax-to-vscode)
 - [Usage](#usage)
   - [Launch dev server](#launch-dev-server)
   - [Watch assets changes](#watch-assets-changes)
@@ -74,7 +77,7 @@ mysql -e "GRANT ALL ON <dbname>.* TO <username>@localhost;"
 php bin/console doctrine:fixtures:load
 ```
 
-Then, copy the "./.env" file to "./.env.local" and replace variables:
+Then, copy the `./.env` file to `./.env.local` and replace variables:
 
 ```text
 DATABASE_URL=mysql://<username>:<password>@127.0.0.1:3306/<dbname>
@@ -94,7 +97,7 @@ symfony new --version=~5.0.0 --full ./<my_project_name>
 cd ./<my_project_name>
 ```
 
-By default, packages versions are not set properly, update your "./composer.json" to match these:
+By default, packages versions are not set properly, update your `./composer.json` to match these:
 
 ```json
   "require": {
@@ -133,7 +136,7 @@ By default, packages versions are not set properly, update your "./composer.json
   },
 ```
 
-Then, remove "./composer-lock.json" and "./vendor" files and reinstall deps:
+Then, remove `./composer-lock.json` and `./vendor` files and reinstall deps:
 
 ```bash
 composer install
@@ -147,7 +150,7 @@ composer install
 composer require --dev symfony/webpack-encore-bundle:~1.7.0
 ```
 
-Edit the "./webpack.config.js" file like this:
+Edit the `./webpack.config.js` file like this:
 
 ```javascript
 const Encore = require('@symfony/webpack-encore')
@@ -190,7 +193,7 @@ yarn add -D typescript@~3.7.0
 yarn add -D ts-loader@~5.3.0
 ```
 
-Create a new "./tsconfig.json" file:
+Create a new `./tsconfig.json` file:
 
 ```json
 {
@@ -206,14 +209,13 @@ Create a new "./tsconfig.json" file:
 }
 ```
 
-Create a new "./assets/ts/app.ts" file:
+Remove `./assets/js` folder and then create a new `./assets/ts/app.ts` file:
 
 ```javascript
 import './../css/app.css'
+
 console.log('Hello Webpack Encore! Edit me in assets/ts/app.ts')
 ```
-
-Remove "./assets/js" folder.
 
 ### Install PostCSS CSS compiler with preset-env and PurgeCSS
 
@@ -233,7 +235,7 @@ yarn add -D purgecss@~2.1.0
 yarn add -D @fullhuman/postcss-purgecss@~2.1.0
 ```
 
-Create a new "./src/postcss.config.js" file:
+Create a new `./src/postcss.config.js` file:
 
 ```javascript
 const config = {
@@ -252,7 +254,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 ```
 
-Add this to `./package.json` file:
+Add browserslist to `./package.json` file:
 
 ```json
   "browserslist": [
@@ -350,8 +352,6 @@ Create a new  `./.stylelintrc.json`:
   "extends": ["stylelint-config-standard", "stylelint-config-prettier"]
 }
 ```
-
-Add these scripts to  `./package.json` file:
 
 ### Install MarkdownLint code linter
 
@@ -465,6 +465,39 @@ Then, you can install it:
 composer require --dev sclable/xml-lint:dev-master
 ```
 
+### Configure .gitignore
+
+[Back to top ↑](#table-of-contents)
+
+Add these lines to `./.gitignore` file:
+
+```text
+.phpcs-cache
+src/Migrations
+```
+
+### Configure .editorconfig
+
+[Back to top ↑](#table-of-contents)
+
+Create a new `./.editorconfig` file :
+
+```text
+# EditorConfig is awesome: https://EditorConfig.org
+root = true
+
+[*]
+end_of_line = lf
+insert_final_newline = true
+charset = utf-8
+indent_style = space
+indent_size = 2
+trim_trailing_whitespace = true
+
+[*.php]
+indent_size = 4
+```
+
 ### Install scripts
 
 [Back to top ↑](#table-of-contents)
@@ -477,6 +510,7 @@ Add these scripts to  `./package.json` file:
 
 ```json
   "scripts": {
+    "test": "php bin/phpunit",
     "lint": "npm-run-all lint:*",
     "lint:php": "./vendor/bin/phpstan analyse && ./vendor/bin/phpmd ./src,./tests text ./phpmd.xml && ./vendor/bin/phpcs",
     "lint:twig": "php bin/console lint:twig ./templates && prettier --check \"./templates/**/*.html.twig\"",
@@ -498,7 +532,7 @@ Add these scripts to  `./package.json` file:
   }
 ```
 
-### Configure CI with git hooks through Husky
+### Configure CI with git hooks
 
 [Back to top ↑](#table-of-contents)
 
@@ -544,38 +578,156 @@ Add this to your `./package.json` file :
   }
 ```
 
-### Configure .gitignore
+### Configure CI with GitHub Actions
 
 [Back to top ↑](#table-of-contents)
 
-Add these lines to `./.gitignore` file:
+Create a new `./.github/workflows/lint.yml` file:
 
-```text
-.phpcs-cache
-src/Migrations
+```yaml
+name: Check coding style and lint code
+
+on: ["push"]
+
+jobs:
+  lint:
+    runs-on: ubuntu-18.04
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        run: |
+          echo "::set-output name=dir::$(composer config cache-files-dir)"
+      - uses: actions/cache@v1
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+      - uses: actions/cache@v1
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: Install dependencies
+        run: composer install && npm ci
+      - name: Check coding style and lint code
+        run: yarn lint
 ```
 
-### Configure .editorconfig
+Create a new `./.github/workflows/test.yml` file:
+
+```yaml
+name: Launch unit tests & functional tests
+
+on: ["pull_request"]
+
+jobs:
+  test:
+    runs-on: ubuntu-18.04
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        run: |
+          echo "::set-output name=dir::$(composer config cache-files-dir)"
+      - uses: actions/cache@v1
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+      - uses: actions/cache@v1
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: Install dependencies
+        run: composer install && yarn install --frozen-lockfile
+      - name: Launch test
+        run: yarn test
+```
+
+### Integrate formatters, linters & syntax to VSCode
 
 [Back to top ↑](#table-of-contents)
 
-Create a new `./.editorconfig` file :
+Create a new `./.vscode/extensions.json` file:
 
-```text
-# EditorConfig is awesome: https://EditorConfig.org
-root = true
-
-[*]
-end_of_line = lf
-insert_final_newline = true
-charset = utf-8
-indent_style = space
-indent_size = 2
-trim_trailing_whitespace = true
-
-[*.php]
-indent_size = 4
+```json
+{
+  "recommendations": [
+    "bmewburn.vscode-intelephense-client",
+    "ikappas.composer",
+    "eg2.vscode-npm-script",
+    "whatwedo.twig",
+    "shevaua.phpcs",
+    "breezelin.phpstan",
+    "ecodes.vscode-phpmd",
+    "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint",
+    "stylelint.vscode-stylelint",
+    "davidanson.vscode-markdownlint",
+    "me-dutour-mathieu.vscode-github-actions",
+    "mikestead.dotenv",
+    "editorconfig.editorconfig",
+  ]
+}
 ```
+
+This will suggest to install
+[PHP Intelephense](https://marketplace.visualstudio.com/items?itemName=bmewburn.vscode-intelephense-client),
+[Composer](https://marketplace.visualstudio.com/items?itemName=ikappas.composer),
+[NPM](https://marketplace.visualstudio.com/items?itemName=eg2.vscode-npm-script),
+[Twig](https://marketplace.visualstudio.com/items?itemName=whatwedo.twig),
+[PHP Code Sniffer](https://marketplace.visualstudio.com/items?itemName=shevaua.phpcs),
+[PHP Static Analysis](https://marketplace.visualstudio.com/items?itemName=breezelin.phpstan),
+[PHP Mess Detector](https://marketplace.visualstudio.com/items?itemName=ecodes.vscode-phpmd),
+[Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode),
+[ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint),
+[StyleLint](https://marketplace.visualstudio.com/items?itemName=stylelint.vscode-stylelint),
+[MarkdownLint](https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint),
+[Github Actions](https://marketplace.visualstudio.com/items?itemName=me-dutour-mathieu.vscode-github-actions),
+[DotENV](https://marketplace.visualstudio.com/items?itemName=mikestead.dotenv)
+and [EditorConfig](https://marketplace.visualstudio.com/items?itemName=EditorConfig.EditorConfig)
+extensions to everybody opening this project in VSCode.
+
+Then, create a new `./.vscode/settings.json` file:
+
+```json
+{
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": false,
+  "[twig]": {
+    "editor.formatOnSave": true
+  },
+  "[yaml]": {
+    "editor.formatOnSave": true
+  },
+  "[xml]": {
+    "editor.formatOnSave": true
+  },
+  "[css]": {
+    "editor.formatOnSave": true
+  },
+  "[json]": {
+    "editor.formatOnSave": true
+  },
+  "eslint.enable": true,
+  "stylelint.enable": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true,
+    "source.fixAll.stylelint": true,
+    "source.fixAll.markdownlint": true
+  }
+}
+```
+
+This will format automatically the code on save.
 
 ## Usage
 
@@ -608,7 +760,7 @@ yarn build
 [Back to top ↑](#table-of-contents)
 
 ```bash
-php bin/phpunit
+yarn test
 ```
 
 ### Check coding style & lint code for errors/bad practices
