@@ -42,6 +42,8 @@ utilities, continuous integration and continuous delivery.
   - [Format code automatically](#format-code-automatically)
   - [Lint code for errors/bad practices](#lint-code-for-errorsbad-practices)
   - [Execute database migrations](#execute-database-migrations)
+  - [Audit & fix dependencies vulnerabilities](#audit--fix-dependencies-vulnerabilities)
+  - [Check & upgrade outdated dependencies](#check--upgrade-outdated-dependencies)
 
 ## Prerequisites
 
