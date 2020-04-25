@@ -465,7 +465,6 @@ Then, you can install it:
 composer require --dev sclable/xml-lint:dev-master
 ```
 
-
 ### Install scripts
 
 [Back to top ↑](#table-of-contents)
