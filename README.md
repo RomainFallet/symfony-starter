@@ -678,7 +678,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
       - name: Install dependencies
-        run: composer install && npm ci
+        run: composer install && yarn install --frozen-lockfile
       - name: Check coding style and lint code
         run: yarn lint
 ```
