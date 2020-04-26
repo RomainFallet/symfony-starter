@@ -1,0 +1,18 @@
+{
+  "recommendations": [
+    "bmewburn.vscode-intelephense-client",
+    "ikappas.composer",
+    "eg2.vscode-npm-script",
+    "whatwedo.twig",
+    "shevaua.phpcs",
+    "breezelin.phpstan",
+    "ecodes.vscode-phpmd",
+    "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint",
+    "stylelint.vscode-stylelint",
+    "davidanson.vscode-markdownlint",
+    "me-dutour-mathieu.vscode-github-actions",
+    "mikestead.dotenv",
+    "editorconfig.editorconfig",
+  ]
+}

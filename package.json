@@ -1,0 +1,116 @@
+{
+  "browserslist": [
+    "> 0.5%",
+    "last 2 versions",
+    "Firefox ESR",
+    "not dead",
+    "not IE 11",
+    "not IE_Mob 11",
+    "not op_mini all"
+  ],
+  "devDependencies": {
+    "@fullhuman/postcss-purgecss": "~2.1.0",
+    "@prettier/plugin-xml": "~0.7.0",
+    "@symfony/webpack-encore": "~0.29.0",
+    "@typescript-eslint/eslint-plugin": "~2.29.0",
+    "@typescript-eslint/parser": "~2.29.0",
+    "core-js": "~3.0.0",
+    "eslint": "~6.8.0",
+    "eslint-config-prettier": "~6.11.0",
+    "eslint-config-prettier-standard": "~3.0.0",
+    "eslint-config-standard": "~14.1.1",
+    "eslint-config-standard-with-typescript": "~16.0.0",
+    "eslint-plugin-import": "~2.20.0",
+    "eslint-plugin-node": "~11.1.0",
+    "eslint-plugin-prettier": "~3.1.0",
+    "eslint-plugin-promise": "~4.2.0",
+    "eslint-plugin-standard": "~4.0.0",
+    "husky": "~4.2.0",
+    "lint-staged": "~10.1.0",
+    "markdownlint": "~0.20.1",
+    "markdownlint-cli": "~0.22.0",
+    "melody-idom": "~1.7.1",
+    "melody-runtime": "~1.7.1",
+    "npm-run-all": "~4.1.5",
+    "postcss": "~7.0.0",
+    "postcss-loader": "~3.0.0",
+    "postcss-preset-env": "~6.7.0",
+    "prettier": "~2.0.0",
+    "prettier-config-standard": "~1.0.0",
+    "prettier-plugin-twig-melody": "~0.4.2",
+    "purgecss": "~2.1.0",
+    "regenerator-runtime": "~0.13.2",
+    "stylelint": "~13.3.3",
+    "stylelint-config-prettier": "~8.0.0",
+    "stylelint-config-standard": "~20.0.0",
+    "ts-loader": "~5.4.5",
+    "typescript": "~3.8.3",
+    "webpack-notifier": "~1.6.0"
+  },
+  "license": "UNLICENSED",
+  "private": true,
+  "scripts": {
+    "dev-server": "encore dev-server",
+    "dev": "encore dev",
+    "watch": "encore dev --watch",
+    "build": "encore production --progress",
+    "test": "php bin/phpunit",
+    "lint": "npm-run-all lint:*",
+    "lint:php": "./vendor/bin/phpstan analyse && ./vendor/bin/phpmd ./src,./tests text ./phpmd.xml && ./vendor/bin/phpcs",
+    "lint:twig": "php bin/console lint:twig \"./templates\" && prettier --check \"./templates/**/*.html.twig\"",
+    "lint:yml": "php bin/console lint:yaml \"./config\" && prettier --check \"./{config/**/*.yaml,.github/**/*.yml}\"",
+    "lint:xml": "./vendor/bin/xmllint -r 0 ./ && prettier --check \"./*.xml\"",
+    "lint:ts": "eslint \"./assets/ts/**/*.ts\"",
+    "lint:css": "stylelint \"./assets/css/**/*.css\" && prettier --check \"./assets/css/**/*.css\"",
+    "lint:json": "prettier --check \"./*.json\"",
+    "lint:md": "markdownlint \"./*.md\"",
+    "format": "npm-run-all format:*",
+    "format:php": "./vendor/bin/phpcbf",
+    "format:twig": "prettier --write \"./templates/**/*.html.twig\"",
+    "format:yml": "prettier --write \"./{config/**/*.yaml,.github/**/*.yml}\"",
+    "format:xml": "prettier --write \"./*.xml\"",
+    "format:ts": "eslint --fix \"./assets/ts/**/*.ts\"",
+    "format:css": "stylelint --fix \"./assets/css/**/*.css\" && prettier --write \"./assets/css/**/*.css\"",
+    "format:json": "prettier --write \"./*.json\"",
+    "format:md": "markdownlint --fix \"./*.md\""
+  },
+  "lint-staged": {
+    "./{src,tests}/**/*.php": [
+      "./vendor/bin/phpstan analyse",
+      "./vendor/bin/phpmd ./src,./tests text ./phpmd.xml",
+      "./vendor/bin/phpcs"
+    ],
+    "./templates/**/*.html.twig": [
+      "php bin/console lint:twig"
+    ],
+    "./config/**/*.yaml": [
+      "php bin/console lint:yaml"
+    ],
+    "./phpunit.xml": [
+      "./vendor/bin/xmllint"
+    ],
+    "./phpcs.xml": [
+      "./vendor/bin/xmllint"
+    ],
+    "./phpmd.xml": [
+      "./vendor/bin/xmllint"
+    ],
+    "./assets/ts/**/*.ts": [
+      "eslint"
+    ],
+    "./assets/css/**/*.css": [
+      "stylelint"
+    ],
+    "./*.md": [
+      "markdownlint"
+    ],
+    "./{templates/**/*.html.twig,config/**/*.yaml,.github/**/*.yml,*.xml,assets/css/**/*.css,*.json}": [
+      "prettier --check"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  }
+}

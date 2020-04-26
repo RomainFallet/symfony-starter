@@ -1,0 +1,7 @@
+parameters:
+  paths:
+      - ./src
+      - ./tests
+  excludes_analyse:
+    - ./tests/bootstrap.php
+  level: max

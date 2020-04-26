@@ -328,7 +328,7 @@ composer require --dev -n squizlabs/php_codesniffer:~3.5.0
 Create a new `./phpcs.xml` file:
 
 ```xml
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <ruleset
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:noNamespaceSchemaLocation="vendor/squizlabs/php_codesniffer/phpcs.xsd"
@@ -562,25 +562,27 @@ Add these scripts to  `./package.json` file:
     "test": "php bin/phpunit",
     "lint": "npm-run-all lint:*",
     "lint:php": "./vendor/bin/phpstan analyse && ./vendor/bin/phpmd ./src,./tests text ./phpmd.xml && ./vendor/bin/phpcs",
-    "lint:twig": "php bin/console lint:twig ./templates && prettier --check ./templates/**/*.html.twig",
-    "lint:yml": "php bin/console lint:yaml ./config && prettier --check ./config/**/*.yaml",
-    "lint:xml": "./vendor/bin/xmllint -r 0 ./ && prettier --check ./*.xml",
-    "lint:ts": "eslint ./assets/ts/**/*.ts",
-    "lint:css": "stylelint ./assets/css/**/*.css && prettier --check ./assets/css/**/*.css",
-    "lint:json": "prettier --check ./*.json",
-    "lint:md": "markdownlint ./*.md",
+    "lint:twig": "php bin/console lint:twig \"./templates\" && prettier --check \"./templates/**/*.html.twig\"",
+    "lint:yml": "php bin/console lint:yaml \"./config\" && prettier --check \"./{config/**/*.yaml,.github/**/*.yml}\"",
+    "lint:xml": "./vendor/bin/xmllint -r 0 ./ && prettier --check \"./*.xml\"",
+    "lint:ts": "eslint \"./assets/ts/**/*.ts\"",
+    "lint:css": "stylelint \"./assets/css/**/*.css\" && prettier --check \"./assets/css/**/*.css\"",
+    "lint:json": "prettier --check \"./*.json\"",
+    "lint:md": "markdownlint \"./*.md\"",
     "format": "npm-run-all format:*",
     "format:php": "./vendor/bin/phpcbf",
-    "format:twig": "prettier --write ./templates/**/*.html.twig",
-    "format:yml": "prettier --write ./config/**/*.yml",
-    "format:xml": "prettier --write ./*.xml",
-    "format:ts": "eslint --fix ./assets/ts/**/*.ts",
-    "format:css": "stylelint --fix ./assets/css/**/*.css && prettier --write ./assets/css/**/*.css",
-    "format:json": "prettier --write ./*.json",
-    "format:md": "markdownlint --fix ./*.md"
+    "format:twig": "prettier --write \"./templates/**/*.html.twig\"",
+    "format:yml": "prettier --write \"./{config/**/*.yaml,.github/**/*.yml}\"",
+    "format:xml": "prettier --write \"./*.xml\"",
+    "format:ts": "eslint --fix \"./assets/ts/**/*.ts\"",
+    "format:css": "stylelint --fix \"./assets/css/**/*.css\" && prettier --write \"./assets/css/**/*.css\"",
+    "format:json": "prettier --write \"./*.json\"",
+    "format:md": "markdownlint --fix \"./*.md\""
   }
 ```
 <!-- markdownlint-enable MD013 -->
+
+Then, use `yarn format` to format existing code.
 
 ### Configure CI with git hooks
 
@@ -597,7 +599,7 @@ Add this to your `./package.json` file :
   "lint-staged": {
     "./{src,tests}/**/*.php": [
       "./vendor/bin/phpstan analyse",
-      "./vendor/bin/phpmd text ./phpmd.xml",
+      "./vendor/bin/phpmd ./src,./tests text ./phpmd.xml",
       "./vendor/bin/phpcs"
     ],
     "./templates/**/*.html.twig": [
@@ -606,8 +608,14 @@ Add this to your `./package.json` file :
     "./config/**/*.yaml": [
       "php bin/console lint:yaml"
     ],
-    "./*.xml": [
-      "./vendor/bin/xmllint -r 0"
+    "./phpunit.xml": [
+      "./vendor/bin/xmllint"
+    ],
+    "./phpcs.xml": [
+      "./vendor/bin/xmllint"
+    ],
+    "./phpmd.xml": [
+      "./vendor/bin/xmllint"
     ],
     "./assets/ts/**/*.ts": [
       "eslint"
@@ -618,7 +626,7 @@ Add this to your `./package.json` file :
     "./*.md": [
       "markdownlint"
     ],
-    "{./templates/**/*.html.twig,./config/**/*.yaml,./*.xml,./assets/css/**/*.css,./*.json}": [
+    "./{templates/**/*.html.twig,config/**/*.yaml,.github/**/*.yml,*.xml,assets/css/**/*.css,*.json}": [
       "prettier --check"
     ]
   },
