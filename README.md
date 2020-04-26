@@ -16,6 +16,7 @@ utilities, continuous integration and continuous delivery.
 - [Quickstart](#quickstart)
 - [Manual configuration](#manual-configuration)
   - [Init the project](#init-the-project)
+  - [Install API Platform](#install-api-platform)
   - [Install Webpack encore](#install-webpack-encore)
   - [Install TypeScript JS compiler](#install-typeScript-js-compiler)
   - [Install PostCSS CSS compiler with preset-env and PurgeCSS](#install-postcss-css-compiler-with-preset-env-and-purgecss)
@@ -185,6 +186,14 @@ Finally, remove the file `./phpunit.xml.dist` and create a new `./phpunit.xml` f
     <listener class="Symfony\Bridge\PhpUnit\SymfonyTestsListener" />
   </listeners>
 </phpunit>
+```
+
+### Install API Platform
+
+[Back to top ↑](#table-of-contents)
+
+```bash
+composer require api-platform/api-pack:~1.2.2
 ```
 
 ### Install Webpack encore
