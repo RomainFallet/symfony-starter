@@ -1,4 +1,5 @@
 {
+  "phpmd.rules": "${workspaceFolder}/phpmd.xml",
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": false,
   "[twig]": {

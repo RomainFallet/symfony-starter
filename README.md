@@ -392,10 +392,13 @@ Create a new `./phpmd.xml` file:
   <rule ref="rulesets/cleancode.xml" />
   <rule ref="rulesets/codesize.xml" />
   <rule ref="rulesets/controversial.xml">
-      <exclude name="Superglobals" />
+    <exclude name="Superglobals" />
   </rule>
   <rule ref="rulesets/design.xml" />
-  <rule ref="rulesets/naming.xml" />
+  <rule ref="rulesets/naming.xml">
+    <exclude name="ShortVariable" />
+    <exclude name="LongVariable" />
+  </rule>
   <rule ref="rulesets/unusedcode.xml" />
 </ruleset>
 ```
@@ -781,6 +784,7 @@ Then, create a new `./.vscode/settings.json` file:
 
 ```json
 {
+  "phpmd.rules": "${workspaceFolder}/phpmd.xml",
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": false,
   "[twig]": {
