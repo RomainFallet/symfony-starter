@@ -2,6 +2,9 @@
   "phpmd.rules": "${workspaceFolder}/phpmd.xml",
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": false,
+  "[php]": {
+    "editor.formatOnSave": true
+  },
   "[twig]": {
     "editor.formatOnSave": true
   },

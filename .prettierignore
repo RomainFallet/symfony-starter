@@ -1,0 +1,3 @@
+src/Migrations
+src/Kernel.php
+tests/bootstrap

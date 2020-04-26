@@ -11,4 +11,7 @@
     <exclude name="LongVariable" />
   </rule>
   <rule ref="rulesets/unusedcode.xml" />
+  <exclude-pattern>src/Migrations</exclude-pattern>
+  <exclude-pattern>src/Kernel.php</exclude-pattern>
+  <exclude-pattern>tests/bootstrap.php</exclude-pattern>
 </ruleset>

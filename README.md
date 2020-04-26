@@ -353,6 +353,9 @@ Create a new `./phpcs.xml` file:
   <rule ref="PSR1" />
   <file>src/</file>
   <file>tests/</file>
+  <exclude-pattern>src/Migrations</exclude-pattern>
+  <exclude-pattern>src/Kernel.php</exclude-pattern>
+  <exclude-pattern>tests/bootstrap.php</exclude-pattern>
 </ruleset>
 ```
 
@@ -367,13 +370,20 @@ composer require --dev phpstan/phpstan:~0.12.0 phpstan/phpstan-doctrine:~0.12.0 
 Create a new `./phpstan.neon` file:
 
 ```yml
+includes:
+  - ./vendor/phpstan/phpstan-doctrine/extension.neon
+  - ./vendor/phpstan/phpstan-doctrine/rules.neon
+  - ./vendor/phpstan/phpstan-symfony/extension.neon
 parameters:
   paths:
-      - ./src
-      - ./tests
+    - ./src
+    - ./tests
   excludes_analyse:
+    - ./src/Migrations
+    - ./src/Kernel.php
     - ./tests/bootstrap.php
   level: max
+
 ```
 
 ### Install PHP Mess Detector code linter
@@ -400,6 +410,9 @@ Create a new `./phpmd.xml` file:
     <exclude name="LongVariable" />
   </rule>
   <rule ref="rulesets/unusedcode.xml" />
+  <exclude-pattern>src/Migrations</exclude-pattern>
+  <exclude-pattern>src/Kernel.php</exclude-pattern>
+  <exclude-pattern>tests/bootstrap.php</exclude-pattern>
 </ruleset>
 ```
 
@@ -430,6 +443,9 @@ composer require --dev sclable/xml-lint:dev-master
 # Install Prettier
 yarn add -D prettier@~2.0.0
 
+# Install PHP plugin
+yarn add -D @prettier/plugin-php@~0.14.0
+
 # Install Twig plugin
 yarn add -D melody-runtime@~1.7.1 melody-idom@~1.7.1 prettier-plugin-twig-melody@~0.4.2
 
@@ -446,6 +462,14 @@ Create a new `./.prettierrc.json` file:
 {
   "plugins": ["./node_modules/prettier-plugin-twig-melody"]
 }
+```
+
+Create a new `./.prettierignore` file:
+
+```json
+src/Migrations
+src/Kernel.php
+tests/bootstrap
 ```
 
 ### Install ESLint code linter with StandardJS rules
@@ -581,7 +605,7 @@ Add these scripts to  `./package.json` file:
   "scripts": {
     "test": "php bin/phpunit",
     "lint": "npm-run-all lint:*",
-    "lint:php": "./vendor/bin/phpstan analyse && ./vendor/bin/phpmd ./src,./tests text ./phpmd.xml && ./vendor/bin/phpcs",
+    "lint:php": "./vendor/bin/phpstan analyse && ./vendor/bin/phpmd ./src,./tests text ./phpmd.xml && prettier --check \"./{src/**/*.php,tests/**/*.php}\" && ./vendor/bin/phpcs",
     "lint:twig": "php bin/console lint:twig \"./templates\" && prettier --check \"./templates/**/*.html.twig\"",
     "lint:yml": "php bin/console lint:yaml \"./config\" && prettier --check \"./{config/**/*.yaml,.github/**/*.yml}\"",
     "lint:xml": "./vendor/bin/xmllint -r 0 ./ && prettier --check \"./*.xml\"",
@@ -590,7 +614,7 @@ Add these scripts to  `./package.json` file:
     "lint:json": "prettier --check \"./*.json\"",
     "lint:md": "markdownlint \"./*.md\"",
     "format": "npm-run-all format:*",
-    "format:php": "./vendor/bin/phpcbf",
+    "format:php": "prettier --write \"./{src/**/*.php,tests/**/*.php}\" && ./vendor/bin/phpcbf",
     "format:twig": "prettier --write \"./templates/**/*.html.twig\"",
     "format:yml": "prettier --write \"./{config/**/*.yaml,.github/**/*.yml}\"",
     "format:xml": "prettier --write \"./*.xml\"",
@@ -646,7 +670,7 @@ Add this to your `./package.json` file :
     "./*.md": [
       "markdownlint"
     ],
-    "./{templates/**/*.html.twig,config/**/*.yaml,.github/**/*.yml,*.xml,assets/css/**/*.css,*.json}": [
+    "./{src/**/*.php,tests/**/*.php,templates/**/*.html.twig,config/**/*.yaml,.github/**/*.yml,*.xml,assets/css/**/*.css,*.json}": [
       "prettier --check"
     ]
   },
@@ -795,6 +819,9 @@ Then, create a new `./.vscode/settings.json` file:
   "phpmd.rules": "${workspaceFolder}/phpmd.xml",
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": false,
+  "[php]": {
+    "editor.formatOnSave": true
+  },
   "[twig]": {
     "editor.formatOnSave": true
   },

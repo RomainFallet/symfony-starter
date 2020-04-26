@@ -10,6 +10,7 @@
   ],
   "devDependencies": {
     "@fullhuman/postcss-purgecss": "~2.1.0",
+    "@prettier/plugin-php": "~0.14.0",
     "@prettier/plugin-xml": "~0.7.0",
     "@symfony/webpack-encore": "~0.29.0",
     "@typescript-eslint/eslint-plugin": "~2.29.0",
@@ -56,7 +57,7 @@
     "build": "encore production --progress",
     "test": "php bin/phpunit",
     "lint": "npm-run-all lint:*",
-    "lint:php": "./vendor/bin/phpstan analyse && ./vendor/bin/phpmd ./src,./tests text ./phpmd.xml && ./vendor/bin/phpcs",
+    "lint:php": "./vendor/bin/phpstan analyse && ./vendor/bin/phpmd ./src,./tests text ./phpmd.xml && prettier --check \"./{src/**/*.php,tests/**/*.php}\" && ./vendor/bin/phpcs",
     "lint:twig": "php bin/console lint:twig \"./templates\" && prettier --check \"./templates/**/*.html.twig\"",
     "lint:yml": "php bin/console lint:yaml \"./config\" && prettier --check \"./{config/**/*.yaml,.github/**/*.yml}\"",
     "lint:xml": "./vendor/bin/xmllint -r 0 ./ && prettier --check \"./*.xml\"",
@@ -65,7 +66,7 @@
     "lint:json": "prettier --check \"./*.json\"",
     "lint:md": "markdownlint \"./*.md\"",
     "format": "npm-run-all format:*",
-    "format:php": "./vendor/bin/phpcbf",
+    "format:php": "prettier --write \"./{src/**/*.php,tests/**/*.php}\" && ./vendor/bin/phpcbf",
     "format:twig": "prettier --write \"./templates/**/*.html.twig\"",
     "format:yml": "prettier --write \"./{config/**/*.yaml,.github/**/*.yml}\"",
     "format:xml": "prettier --write \"./*.xml\"",
@@ -104,7 +105,7 @@
     "./*.md": [
       "markdownlint"
     ],
-    "./{templates/**/*.html.twig,config/**/*.yaml,.github/**/*.yml,*.xml,assets/css/**/*.css,*.json}": [
+    "./{src/**/*.php,tests/**/*.php,templates/**/*.html.twig,config/**/*.yaml,.github/**/*.yml,*.xml,assets/css/**/*.css,*.json}": [
       "prettier --check"
     ]
   },
