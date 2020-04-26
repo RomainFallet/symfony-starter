@@ -440,6 +440,14 @@ yarn add -D @prettier/plugin-xml@~0.7.0
 yarn add -D prettier-config-standard@~1.0.0
 ```
 
+Create a new `./.prettierrc.json` file:
+
+```json
+{
+  "plugins": ["./node_modules/prettier-plugin-twig-melody"]
+}
+```
+
 ### Install ESLint code linter with StandardJS rules
 
 [Back to top ↑](#table-of-contents)
