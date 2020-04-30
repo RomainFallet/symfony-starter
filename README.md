@@ -1135,6 +1135,8 @@ Then, create a new `./.vscode/settings.json` file:
 
 ```json
 {
+  "phpcs.enable": true,
+  "phpmd.enabled": true,
   "phpmd.rules": "${workspaceFolder}/phpmd.xml",
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": false,

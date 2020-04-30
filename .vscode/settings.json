@@ -1,4 +1,6 @@
 {
+  "phpcs.enable": true,
+  "phpmd.enabled": true,
   "phpmd.rules": "${workspaceFolder}/phpmd.xml",
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": false,
