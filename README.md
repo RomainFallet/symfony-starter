@@ -420,19 +420,8 @@ Create a new `./phpmd.xml` file:
 
 [Back to top ↑](#table-of-contents)
 
-Add this to your `./composer.json` file:
-
-```json
-  "repositories": [{
-    "type": "vcs",
-    "url": "https://github.com/RomainFallet/xml-lint"
-  }]
-```
-
-Then, you can install it:
-
 ```bash
-composer require --dev sclable/xml-lint:dev-master
+composer require --dev sclable/xml-lint:~0.3.0
 ```
 
 ### Install Prettier code formatter
