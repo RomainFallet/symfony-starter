@@ -16,6 +16,7 @@ utilities, continuous integration and continuous delivery.
 - [Quickstart](#quickstart)
 - [Manual configuration](#manual-configuration)
   - [Init the project](#init-the-project)
+  - [Create default app](#create-default-app)
   - [Install API Platform](#install-api-platform)
   - [Install Webpack encore](#install-webpack-encore)
   - [Install TypeScript JS compiler](#install-typeScript-js-compiler)
@@ -186,6 +187,342 @@ Finally, remove the file `./phpunit.xml.dist` and create a new `./phpunit.xml` f
     <listener class="Symfony\Bridge\PhpUnit\SymfonyTestsListener" />
   </listeners>
 </phpunit>
+```
+
+### Create default app
+
+[Back to top ↑](#table-of-contents)
+
+Edit the `./templates/base.html.twig` file like this:
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>
+      {% block title %}
+        Welcome!
+      {% endblock %}
+    </title>
+    {{ encore_entry_link_tags('app') }}
+    {% block stylesheets %}
+
+    {% endblock %}
+  </head>
+  <body>
+    {% block body %}
+
+    {% endblock %}
+    {{ encore_entry_script_tags('app') }}
+    {% block javascripts %}
+
+    {% endblock %}
+  </body>
+</html>
+```
+
+Edit the `./assets/css/app.css` file like this:
+
+```css
+body {
+  background-color: lightgray;
+}
+
+.cat {
+  object-fit: cover;
+}
+```
+
+Create a new `./src/Controller/CatController.php` file:
+
+```php
+<?php
+
+namespace App\Controller;
+
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
+use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\CatRepository;
+use App\Entity\Cat;
+use App\Form\CatType;
+
+class CatController extends AbstractController
+{
+    /**
+     * @Route("/", name="list_cat")
+     */
+    public function index(CatRepository $catRepository): Response
+    {
+        return $this->render('cat/list.html.twig', [
+            'cats' => array_reverse($catRepository->findAll()),
+        ]);
+    }
+
+    /**
+     * @Route("/add", name="add_cat")
+     */
+    public function add(
+        Request $request,
+        CatRepository $catRepository,
+        EntityManagerInterface $entityManager
+    ): Response {
+        $cat = new Cat();
+        $cat->setUrl($catRepository->getRandomUrl());
+
+        $form = $this->createForm(CatType::class, $cat);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $cat = $form->getData();
+            $entityManager->persist($cat);
+            $entityManager->flush();
+            return $this->redirectToRoute('list_cat');
+        }
+
+        return $this->render('cat/add.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+}
+```
+
+Create a new `./templates/cat/list.html.twig` file:
+
+```html
+{% extends 'base.html.twig' %}
+
+{% block title %}
+  Cats list
+{% endblock %}
+
+{% block body %}
+  <h1>
+    Cats list
+  </h1>
+  {% if cats is empty %}
+    <p>
+      No cat around.
+    </p>
+  {% endif %}
+  <p>
+    Do you want to
+    <a href="{{ path('add_cat') }}">add a new cat</a>?
+  <p>
+  <h1></h1>
+  <ul>
+    {% for cat in cats %}
+      <li>
+      <img class="cat" width="300" height="200" src="{{ cat.url }}" alt="{{ cat.name }} the cat" />
+      </li>
+    {% endfor %}
+  </ul>
+{% endblock %}
+```
+
+Create a new `./templates/cat/add.html.twig` file:
+
+```html
+{% extends 'base.html.twig' %}
+
+{% block title %}
+  Add a new cat
+{% endblock %}
+
+{% block body %}
+  <h1>
+    Add a new cat
+  </h1>
+  {{ form_start(form) }}
+  {{ form_widget(form) }}
+  <button type="submit">
+    Add
+  </button>
+  {{ form_end(form) }}
+{% endblock %}
+```
+
+Create a new `./src/Entity/Cat.php` file:
+
+```php
+<?php
+
+namespace App\Entity;
+
+use ApiPlatform\Core\Annotation\ApiResource;
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ApiResource()
+ * @ORM\Entity(repositoryClass="App\Repository\CatRepository")
+ */
+class Cat
+{
+    /**
+     * @var integer
+     * @ORM\Id()
+     * @ORM\GeneratedValue()
+     * @ORM\Column(type="integer")
+     */
+    private $id;
+
+    /**
+     * @var string
+     * @ORM\Column(type="string", length=255)
+     */
+    private $name;
+
+    /**
+     * @var string
+     * @ORM\Column(type="string", length=255)
+     */
+    private $color;
+
+    /**
+     * @var string
+     * @ORM\Column(type="string", length=255)
+     */
+    private $url;
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): self
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    public function getColor(): ?string
+    {
+        return $this->color;
+    }
+
+    public function setColor(string $color): self
+    {
+        $this->color = $color;
+
+        return $this;
+    }
+
+    public function getUrl(): ?string
+    {
+        return $this->url;
+    }
+
+    public function setUrl(string $url): self
+    {
+        $this->url = $url;
+
+        return $this;
+    }
+}
+```
+
+Create a new `./CatRepository.php` file:
+
+<!-- markdownlint-disable MD013 -->
+```php
+<?php
+
+namespace App\Repository;
+
+use App\Entity\Cat;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Persistence\ManagerRegistry;
+use Error;
+use Exception;
+use Symfony\Component\HttpClient\HttpClient;
+
+/**
+ * @method Cat|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Cat|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Cat[]    findAll()
+ * @method Cat[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ */
+class CatRepository extends ServiceEntityRepository
+{
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, Cat::class);
+    }
+
+    /**
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
+    public function getRandomUrl(): string
+    {
+        $client = HttpClient::create();
+        $response = $client->request(
+            'GET',
+            'https://api.thecatapi.com/v1/images/search'
+        );
+        if ($response->getStatusCode() >= 400) {
+            throw new Error('Unable to get a new cat.');
+        }
+        return $response->toArray()[0]['url'];
+    }
+}
+```
+<!-- markdownlint-enable -->
+
+Create a new `./src/Form/CatType.php` file:
+
+```php
+<?php
+
+namespace App\Form;
+
+use App\Entity\Cat;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+
+class CatType extends AbstractType
+{
+    /**
+     * @param FormBuilderInterface<FormInterface> $builder
+     * @param array<mixed> $options
+     * @return void
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        dump($options);
+        $builder
+            ->add('name')
+            ->add('color', ChoiceType::class, [
+                'choices' => [
+                    'Black' => 'black',
+                    'Brown' => 'brown',
+                    'White' => 'white',
+                ],
+            ])
+            ->add('url');
+    }
+
+    /**
+     * @return void
+     */
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefaults([
+            'data_class' => Cat::class,
+        ]);
+    }
+}
 ```
 
 ### Install API Platform
