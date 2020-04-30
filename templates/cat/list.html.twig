@@ -20,7 +20,13 @@
   <ul>
     {% for cat in cats %}
       <li>
-      <img class="cat" width="300" height="200" src="{{ cat.url }}" alt="{{ cat.name }} the cat" />
+        <img
+          class="cat"
+          width="300"
+          height="200"
+          src="{{ cat.url }}"
+          alt="{{ cat.name }} the cat"
+        />
       </li>
     {% endfor %}
   </ul>

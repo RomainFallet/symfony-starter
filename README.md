@@ -312,11 +312,16 @@ Create a new `./templates/cat/list.html.twig` file:
     Do you want to
     <a href="{{ path('add_cat') }}">add a new cat</a>?
   <p>
-  <h1></h1>
   <ul>
-    {% for cat in cats %}
+    {% for cat in cats %
       <li>
-      <img class="cat" width="300" height="200" src="{{ cat.url }}" alt="{{ cat.name }} the cat" />
+        <img
+          class="cat"
+          width="300"
+          height="200"
+          src="{{ cat.url }}"
+          alt="{{ cat.name }} the cat"
+        />
       </li>
     {% endfor %}
   </ul>
@@ -767,27 +772,16 @@ composer require --dev sclable/xml-lint:~0.3.0
 
 ```bash
 # Install Prettier
-yarn add -D prettier@~2.0.0
+yarn add -D prettier@~1.19.0
 
 # Install PHP plugin
 yarn add -D @prettier/plugin-php@~0.14.0
-
-# Install Twig plugin
-yarn add -D melody-runtime@~1.7.1 melody-idom@~1.7.1 prettier-plugin-twig-melody@~0.4.2
 
 # Install XML plugin
 yarn add -D @prettier/plugin-xml@~0.7.0
 
 # Install StandardJS config
 yarn add -D prettier-config-standard@~1.0.0
-```
-
-Create a new `./.prettierrc.json` file:
-
-```json
-{
-  "plugins": ["./node_modules/prettier-plugin-twig-melody"]
-}
 ```
 
 Create a new `./.prettierignore` file:
@@ -932,7 +926,7 @@ Add these scripts to  `./package.json` file:
     "test": "php bin/phpunit",
     "lint": "npm-run-all lint:*",
     "lint:php": "./vendor/bin/phpstan analyse && ./vendor/bin/phpmd ./src,./tests text ./phpmd.xml && prettier --check \"./{src/**/*.php,tests/**/*.php}\" && ./vendor/bin/phpcs",
-    "lint:twig": "php bin/console lint:twig \"./templates\" && prettier --check \"./templates/**/*.html.twig\"",
+    "lint:twig": "php bin/console lint:twig \"./templates\"",
     "lint:yml": "php bin/console lint:yaml \"./config\" && prettier --check \"./{config/**/*.yaml,.github/**/*.yml}\"",
     "lint:xml": "./vendor/bin/xmllint -r 0 ./ && prettier --check \"./*.xml\"",
     "lint:ts": "eslint \"./assets/ts/**/*.ts\"",
@@ -941,7 +935,6 @@ Add these scripts to  `./package.json` file:
     "lint:md": "markdownlint \"./*.md\"",
     "format": "npm-run-all format:*",
     "format:php": "prettier --write \"./{src/**/*.php,tests/**/*.php}\" && ./vendor/bin/phpcbf",
-    "format:twig": "prettier --write \"./templates/**/*.html.twig\"",
     "format:yml": "prettier --write \"./{config/**/*.yaml,.github/**/*.yml}\"",
     "format:xml": "prettier --write \"./*.xml\"",
     "format:ts": "eslint --fix \"./assets/ts/**/*.ts\"",
@@ -996,7 +989,7 @@ Add this to your `./package.json` file :
     "./*.md": [
       "markdownlint"
     ],
-    "./{src/**/*.php,tests/**/*.php,templates/**/*.html.twig,config/**/*.yaml,.github/**/*.yml,*.xml,assets/css/**/*.css,*.json}": [
+    "./{src/**/*.php,tests/**/*.php,config/**/*.yaml,.github/**/*.yml,*.xml,assets/css/**/*.css,*.json}": [
       "prettier --check"
     ]
   },
