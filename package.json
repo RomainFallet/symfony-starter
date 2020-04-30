@@ -54,7 +54,7 @@
     "build": "encore production --progress",
     "test": "php bin/phpunit",
     "lint": "npm-run-all lint:*",
-    "lint:php": "./vendor/bin/phpstan analyse && ./vendor/bin/phpmd ./src,./tests text ./phpmd.xml && prettier --check \"./{src,tests}/**/*.php\" && ./vendor/bin/phpcs",
+    "lint:php": "./vendor/bin/phpstan analyse && ./vendor/bin/phpmd ./src,./tests text ./phpmd.xml && prettier --check \"./{src/**/*.php,tests/**/*.php}\" && ./vendor/bin/phpcs",
     "lint:twig": "php bin/console lint:twig \"./templates\"",
     "lint:yml": "php bin/console lint:yaml \"./config\" && prettier --check \"./{config/**/*.yaml,.github/**/*.yml}\"",
     "lint:xml": "./vendor/bin/xmllint -r 0 ./ && prettier --check \"./*.xml\"",
