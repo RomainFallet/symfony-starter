@@ -16,17 +16,15 @@
   <p>
     Do you want to
     <a href="{{ path('add_cat') }}">add a new cat</a>?
-  <p>
+  </p>
   <ul>
     {% for cat in cats %}
       <li>
-        <img
-          class="cat"
+        <img class="cat"
           width="300"
           height="200"
           src="{{ cat.url }}"
-          alt="{{ cat.name }} the cat"
-        />
+          alt="{{ cat.name }} the cat" />
       </li>
     {% endfor %}
   </ul>
