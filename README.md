@@ -1302,10 +1302,10 @@ yarn lint
 # Format PHP with Prettier and PHP Code Sniffer (PSR-1 & PSR-12 rules)
 yarn format:php
 
-# Format Twig Prettier (Twig official coding standards rules)
+# Format Twig with Prettier (Twig official coding standards rules)
 yarn format:twig
 
-# Format Yaml Prettier
+# Format Yaml with Prettier
 yarn format:yml
 
 # Format XML with Prettier
