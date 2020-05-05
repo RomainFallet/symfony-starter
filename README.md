@@ -34,6 +34,7 @@ utilities, continuous integration and continuous delivery.
   - [Configure scripts](#configure-scripts)
   - [Configure CI with Git hooks](#configure-ci-with-git-hooks)
   - [Configure CI with GitHub Actions](#configure-ci-with-github-actions)
+  - [Configure CD with GitHub Actions](#configure-cd-with-github-actions)
   - [Integrate formatters, linters & syntax to VSCode](#integrate-formatters-linters--syntax-to-vscode)
 - [Usage](#usage)
   - [Launch dev server](#launch-dev-server)
@@ -1089,6 +1090,55 @@ jobs:
       - name: Launch test
         run: yarn test
 ```
+
+### Configure CD with Github Actions
+
+Create a new `./.github/workflows/deploy.yml`:
+
+<!-- markdownlint-disable MD013 -->
+```yml
+name: Deploy the app
+
+on:
+  push:
+    branches: ["master"]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-18.04
+
+    steps:
+      - name: Deploy through SSH
+        run: |
+          sshpass -p "${{ secrets.SSH_PASS }}" ssh -tt -o StrictHostKeyChecking=no "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" '
+            # Go inside the app directory
+            cd ~/
+
+            # Get latest updates
+            git fetch
+            git checkout "${{ github.sha }}"
+
+            # Install PHP dependencies
+            composer install
+
+            # Install JS dependencies
+            yarn install
+
+            # Build assets
+            yarn build
+
+            # Execute database migrations
+            php bin/console doctrine:migrations:diff --allow-empty-diff
+            php bin/console doctrine:migrations:migrate -n
+          '
+```
+<!-- markdownlint-enable -->
+
+To use the Continuons Delivery feature, you need to have a machine accessible
+through SSH.
+
+Then configure these GitHub Actions encrypted secrets:
+`SSH_USER`, `SSH_PASS` and `SSH_HOST` ([see the doc](https://help.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets)).
 
 ### Integrate formatters, linters & syntax to VSCode
 
