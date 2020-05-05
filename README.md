@@ -1134,7 +1134,7 @@ jobs:
 ```
 <!-- markdownlint-enable -->
 
-To use the Continuons Delivery feature, you need to have a machine accessible
+To use the Continuous Delivery feature, you need to have a machine accessible
 through SSH.
 
 Then configure these GitHub Actions encrypted secrets:
