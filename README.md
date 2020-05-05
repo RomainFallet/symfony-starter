@@ -1265,10 +1265,11 @@ yarn test
 # Check all files
 yarn lint
 
-# Check PHP with PHPStan, PHP Mess Detector and PHP Code Sniffer
+# Check PHP with PHPStan, PHP Mess Detector, Prettier
+# and PHP Code Sniffer (PSR-1 & PSR-12 rules)
 yarn lint:php
 
-# Check Twig with Symfony and Prettier (Standard rules)
+# Check Twig with Symfony and Prettier (Twig official coding standards rules)
 yarn lint:twig
 
 # Check Yaml with Symfony and Prettier
@@ -1298,10 +1299,10 @@ yarn lint:md
 # Format all files
 yarn lint
 
-# Format PHP with PHP Code Sniffer
+# Format PHP with Prettier and PHP Code Sniffer (PSR-1 & PSR-12 rules)
 yarn format:php
 
-# Format Twig Prettier (Standard rules)
+# Format Twig Prettier (Twig official coding standards rules)
 yarn format:twig
 
 # Format Yaml Prettier
