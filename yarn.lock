@@ -6983,7 +6983,7 @@ prettier-linter-helpers@^1.0.0:
   dependencies:
     fast-diff "^1.1.2"
 
-prettier-plugin-twig-melody@^0.4.3:
+prettier-plugin-twig-melody@~0.4.3:
   version "0.4.3"
   resolved "https://registry.yarnpkg.com/prettier-plugin-twig-melody/-/prettier-plugin-twig-melody-0.4.3.tgz#b40f693551e152a4f2cf47e2386f6f7ba2cd9f98"
   integrity sha512-Sa5GqgqklILVvye2DJXLS0rK8gsmAgMu33yfmsHflkR72fHHj8KLeIdrn8wS+kv38LirDimx2joAmrElVTpBvw==
