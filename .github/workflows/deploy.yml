@@ -41,7 +41,7 @@ jobs:
 
       # Install Composer dependencies
       - name: Install PHP dependencies
-        run: composer install --no-dev --optimize-autoloader
+        run: composer install --no-dev
 
       # Install Yarn dependencies
       - name: Install Yarn dependencies
