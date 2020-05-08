@@ -53,7 +53,9 @@ jobs:
 
       # Remove dev dependencies
       - name: Remove Yarn dev deps
-        run: rm -rf ./node_modules && yarn install --production --frozen-lockfile
+        run: |
+          rm -rf ./node_modules
+          yarn install --production --frozen-lockfile
 
       # Configure environment variables
       - name: Configure .env.local
@@ -68,3 +70,13 @@ jobs:
         run: |
           find ./ -type f -exec chmod 664 {} \;
           find ./ -type d -exec chmod 775 {} \;
+
+      # Configure passwordless SSH authentication
+      - name: Configure SSH
+        run: |
+          mkdir ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" | tee ~/.ssh/id_rsa
+
+      # Deploy the app
+      - name: Deploy with rsync
+        run: rsync -av -e "ssh -i ~/.ssh/id_rsa -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no" ./ "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}"
