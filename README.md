@@ -1146,10 +1146,7 @@ jobs:
 
       # Remove dev dependencies
       - name: Remove Yarn dev deps
-        run: |
-          rm -rf ./node_modules
-          yarn install --verbose --production --frozen-lockfile
-          ls -al ./ && ls -al ./node_modules
+        run: rm -rf ./node_modules && yarn install --production --frozen-lockfile
 
       # Configure environment variables
       - name: Configure .env.local
