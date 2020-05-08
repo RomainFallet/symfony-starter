@@ -43,13 +43,17 @@ jobs:
       - name: Install PHP dependencies
         run: composer install --no-dev --no-scripts --optimize-autoloader
 
-      # Install Yarn dependencies
+      # Install Yarn dependencies (with dev deps)
       - name: Install Yarn dependencies
-        run: yarn install --production --frozen-lockfile
+        run: yarn install --frozen-lockfile
 
       # Build assets
       - name: Build assets with Webpack
         run: yarn build
+
+      # Remove dev dependencies
+      - name: Remove Yarn dev deps
+        run: rm -rf ./node_modules && yarn install --production --frozen-lockfile
 
       # Configure environment variables
       - name: Configure .env.local
