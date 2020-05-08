@@ -1172,7 +1172,7 @@ jobs:
 
       # Deploy the app to the production machine
       - name: Deploy with rsync
-        run: rsync -av -e "ssh -i ~/.ssh/id_rsa -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no" ./ "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}"
+        run: rsync -av -e "ssh -i ~/.ssh/id_rsa -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no" ./ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}
 ```
 <!-- markdownlint-enable -->
 
