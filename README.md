@@ -1169,6 +1169,7 @@ jobs:
         run: |
           mkdir ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" | tee ~/.ssh/id_rsa
+          chmod 400 ~/.ssh/id_rsa
 
       # Deploy the app to the production machine
       - name: Deploy with rsync
