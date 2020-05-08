@@ -1062,12 +1062,6 @@ jobs:
     runs-on: ubuntu-18.04
 
     steps:
-      - uses: shivammathur/setup-php@v2
-        with:
-          php-version: "7.3"
-      - uses: actions/setup-node@v1
-        with:
-          node-version: "12.x"
       - uses: actions/checkout@v2
       - name: Get Composer Cache Directory
         id: composer-cache
@@ -1108,29 +1102,61 @@ jobs:
     runs-on: ubuntu-18.04
 
     steps:
-      - name: Deploy through SSH
+      # Configure environment
+      - name: Configure PHP version
+        run: sudo update-alternatives --set php /usr/bin/php7.3
+      - name: Configure NodeJS version
+        run: \. ~/.nvm/nvm.sh && nvm install 12
+
+      # Clone the project
+      - uses: actions/checkout@v2
+
+      # Cache Composer dependencies
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+      - uses: actions/cache@v1
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      # Cache Yarn dependencies
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+      - uses: actions/cache@v1
+        id: yarn-cache
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: ${{ runner.os }}-yarn-
+
+      # Install Composer dependencies
+      - name: Install PHP dependencies
+        run: composer install --no-dev --optimize-autoloader
+
+      # Install Yarn dependencies
+      - name: Install Yarn dependencies
+        run: yarn install --production --frozen-lockfile
+
+      # Build assets
+      - name: Build assets with Webpack
+        run: yarn build
+
+      # Configure environment variables
+      - name: Configure .env.local
         run: |
-          sshpass -p "${{ secrets.SSH_PASS }}" ssh -tt -o StrictHostKeyChecking=no "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" '
-            # Go inside the app directory
-            cd ~/
+          cp ./.env ./.env.local
+          sudo sed -i'.tmp' -e 's/APP_ENV=dev/APP_ENV=prod/g' ./.env.local
+          sudo sed -i'.tmp' -e 's,DATABASE_URL=mysql://db_user:db_password@127.0.0.1:3306/db_name,DATABASE_URL='"${{ DATABASE_URI }}"',g' ./.env.local
+          sudo rm ./.env.local.tmp
 
-            # Get latest updates
-            git fetch
-            git checkout "${{ github.sha }}"
-
-            # Install PHP dependencies
-            composer install
-
-            # Install JS dependencies
-            yarn install
-
-            # Build assets
-            yarn build
-
-            # Execute database migrations
-            php bin/console doctrine:migrations:diff --allow-empty-diff
-            php bin/console doctrine:migrations:migrate -n
-          '
+      # Set permissions
+      - name: Set permissions
+        run: |
+          find ./ -type f -exec chmod 664 {} \;
+          find ./ -type d -exec chmod 775 {} \;
 ```
 <!-- markdownlint-enable -->
 
