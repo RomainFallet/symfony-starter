@@ -501,13 +501,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class CatType extends AbstractType
 {
-    /**
-     * @param FormBuilderInterface<FormInterface> $builder
-     * @param array<mixed> $options
-     * @return void
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
-    {
+    public function buildForm(
+        FormBuilderInterface $builder,
+        array $options
+    ): void {
         dump($options);
         $builder
             ->add('name')
@@ -521,10 +518,7 @@ class CatType extends AbstractType
             ->add('url');
     }
 
-    /**
-     * @return void
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Cat::class,
