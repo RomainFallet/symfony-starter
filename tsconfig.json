@@ -7,5 +7,5 @@
     "sourceMap": true,
     "noUnusedLocals": true
   },
-  "include": ["./assets/ts/**/*.ts"]
+  "include": ["assets/scripts/**/*.ts"]
 }

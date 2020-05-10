@@ -6,7 +6,7 @@ if (!Encore.isRuntimeEnvironmentConfigured()) {
 
 Encore.setOutputPath('public/build/')
   .setPublicPath('/build')
-  .addEntry('app', './assets/ts/app.ts')
+  .addEntry('app', './assets/scripts/app.ts')
   .splitEntryChunks()
   .enableSingleRuntimeChunk()
   .cleanupOutputBeforeBuild()
@@ -15,5 +15,10 @@ Encore.setOutputPath('public/build/')
   .enableVersioning(Encore.isProduction())
   .enableTypeScriptLoader()
   .enablePostCssLoader()
+  .copyFiles({
+    from: './assets/images',
+    to: 'images/[path][name].[hash:8].[ext]'
+  })
+  .enableVersioning()
 
 module.exports = Encore.getWebpackConfig()
