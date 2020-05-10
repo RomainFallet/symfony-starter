@@ -646,9 +646,7 @@ Create a new `./postcss.config.js` file:
 
 ```javascript
 const config = {
-  plugins: [
-    require('postcss-preset-env')
-  ]
+  plugins: [require('postcss-preset-env')]
 }
 
 if (process.env.NODE_ENV === 'production') {
