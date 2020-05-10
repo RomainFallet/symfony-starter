@@ -223,7 +223,7 @@ Edit the `./templates/base.html.twig` file like this:
 </html>
 ```
 
-Edit the `./assets/css/app.css` file like this:
+Remove the `./assets/css` folder and create a new `./assets/styles/app.css` file:
 
 ```css
 body {
@@ -234,6 +234,8 @@ body {
   object-fit: cover;
 }
 ```
+
+Create new `./assets/fonts/.gitkeep` and `./assets/images/.gitkeep` empty files.
 
 Create a new `./src/Controller/CatController.php` file:
 
@@ -558,7 +560,7 @@ if (!Encore.isRuntimeEnvironmentConfigured()) {
 
 Encore.setOutputPath('public/build/')
   .setPublicPath('/build')
-  .addEntry('app', './assets/ts/app.ts')
+  .addEntry('app', './assets/scripts/app.ts')
   .splitEntryChunks()
   .enableSingleRuntimeChunk()
   .cleanupOutputBeforeBuild()
@@ -567,6 +569,11 @@ Encore.setOutputPath('public/build/')
   .enableVersioning(Encore.isProduction())
   .enableTypeScriptLoader()
   .enablePostCssLoader()
+  .copyFiles({
+    from: './assets/images',
+    to: 'images/[path][name].[hash:8].[ext]'
+  })
+  .enableVersioning()
 
 module.exports = Encore.getWebpackConfig()
 ```
@@ -602,16 +609,16 @@ Create a new `./tsconfig.json` file:
     "sourceMap": true,
     "noUnusedLocals": true
   },
-  "include": ["./assets/ts/**/*.ts"]
+  "include": ["./assets/scripts/**/*.ts"]
 }
 ```
 
-Remove `./assets/js` folder and then create a new `./assets/ts/app.ts` file:
+Remove `./assets/js` folder and then create a new `./assets/scripts/app.ts` file:
 
 ```javascript
-import './../css/app.css'
+import './../styles/app.css'
 
-console.log('Hello Webpack Encore! Edit me in assets/ts/app.ts')
+console.log('Hello Webpack Encore! Edit me in assets/scripts/app.ts')
 ```
 
 ### Install PostCSS CSS compiler with preset-env and PurgeCSS
