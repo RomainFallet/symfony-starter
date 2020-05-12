@@ -830,6 +830,7 @@ Create a new `./.eslintrc.json` file:
 {
   "extends": [
     "standard-with-typescript",
+    "prettier/@typescript-eslint",
     "prettier-standard"
   ],
   "parserOptions": {
