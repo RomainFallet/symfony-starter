@@ -931,8 +931,8 @@ Add these scripts to  `./package.json` file:
     "lint:twig": "php bin/console lint:twig \"./templates\" && prettier --check \"./templates/**/*.html.twig\"",
     "lint:yml": "php bin/console lint:yaml \"./config\" && prettier --check \"./{config/**/*.yaml,.github/**/*.yml}\"",
     "lint:xml": "./vendor/bin/xmllint -r 0 ./ && prettier --check \"./*.xml\"",
-    "lint:ts": "eslint \"./assets/ts/**/*.ts\"",
-    "lint:css": "stylelint \"./assets/css/**/*.css\" && prettier --check \"./assets/css/**/*.css\"",
+    "lint:ts": "eslint \"./assets/scripts/**/*.ts\"",
+    "lint:css": "stylelint \"./assets/styles/**/*.css\" && prettier --check \"./assets/styles/**/*.css\"",
     "lint:json": "prettier --check \"./*.json\"",
     "lint:md": "markdownlint \"./*.md\"",
     "format": "npm-run-all format:*",
@@ -940,8 +940,8 @@ Add these scripts to  `./package.json` file:
     "format:twig": "prettier --write \"./templates/**/*.html.twig\"",
     "format:yml": "prettier --write \"./{config/**/*.yaml,.github/**/*.yml}\"",
     "format:xml": "prettier --write \"./*.xml\"",
-    "format:ts": "eslint --fix \"./assets/ts/**/*.ts\"",
-    "format:css": "stylelint --fix \"./assets/css/**/*.css\" && prettier --write \"./assets/css/**/*.css\"",
+    "format:ts": "eslint --fix \"./assets/scripts/**/*.ts\"",
+    "format:css": "stylelint --fix \"./assets/styles/**/*.css\" && prettier --write \"./assets/styles/**/*.css\"",
     "format:json": "prettier --write \"./*.json\"",
     "format:md": "markdownlint --fix \"./*.md\""
   }
@@ -983,16 +983,16 @@ Add this to your `./package.json` file :
     "./phpmd.xml": [
       "./vendor/bin/xmllint"
     ],
-    "./assets/ts/**/*.ts": [
+    "./assets/scripts/**/*.ts": [
       "eslint"
     ],
-    "./assets/css/**/*.css": [
+    "./assets/styles/**/*.css": [
       "stylelint"
     ],
     "./*.md": [
       "markdownlint"
     ],
-    "./{src/**/*.php,tests/**/*.php,templates/**/*.html.twig,config/**/*.yaml,.github/**/*.yml,*.xml,assets/css/**/*.css,*.json}": [
+    "./{src/**/*.php,tests/**/*.php,templates/**/*.html.twig,config/**/*.yaml,.github/**/*.yml,*.xml,assets/styles/**/*.css,*.json}": [
       "prettier --check"
     ]
   },
