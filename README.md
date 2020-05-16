@@ -223,7 +223,7 @@ Edit the `./templates/base.html.twig` file like this:
 </html>
 ```
 
-Edit the `./assets/css/app.css` file like this:
+Remove the `./assets/css` folder and create a new `./assets/styles/app.css` file:
 
 ```css
 body {
@@ -234,6 +234,8 @@ body {
   object-fit: cover;
 }
 ```
+
+Create new `./assets/fonts/.gitkeep` and `./assets/images/.gitkeep` empty files.
 
 Create a new `./src/Controller/CatController.php` file:
 
@@ -499,13 +501,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class CatType extends AbstractType
 {
-    /**
-     * @param FormBuilderInterface<FormInterface> $builder
-     * @param array<mixed> $options
-     * @return void
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
-    {
+    public function buildForm(
+        FormBuilderInterface $builder,
+        array $options
+    ): void {
         dump($options);
         $builder
             ->add('name')
@@ -519,10 +518,7 @@ class CatType extends AbstractType
             ->add('url');
     }
 
-    /**
-     * @return void
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Cat::class,
@@ -558,7 +554,7 @@ if (!Encore.isRuntimeEnvironmentConfigured()) {
 
 Encore.setOutputPath('public/build/')
   .setPublicPath('/build')
-  .addEntry('app', './assets/ts/app.ts')
+  .addEntry('app', './assets/scripts/app.ts')
   .splitEntryChunks()
   .enableSingleRuntimeChunk()
   .cleanupOutputBeforeBuild()
@@ -567,6 +563,11 @@ Encore.setOutputPath('public/build/')
   .enableVersioning(Encore.isProduction())
   .enableTypeScriptLoader()
   .enablePostCssLoader()
+  .copyFiles({
+    from: './assets/images',
+    to: 'images/[path][name].[hash:8].[ext]'
+  })
+  .enableVersioning()
 
 module.exports = Encore.getWebpackConfig()
 ```
@@ -602,16 +603,16 @@ Create a new `./tsconfig.json` file:
     "sourceMap": true,
     "noUnusedLocals": true
   },
-  "include": ["./assets/ts/**/*.ts"]
+  "include": ["./assets/scripts/**/*.ts"]
 }
 ```
 
-Remove `./assets/js` folder and then create a new `./assets/ts/app.ts` file:
+Remove `./assets/js` folder and then create a new `./assets/scripts/app.ts` file:
 
 ```javascript
-import './../css/app.css'
+import './../styles/app.css'
 
-console.log('Hello Webpack Encore! Edit me in assets/ts/app.ts')
+console.log('Hello Webpack Encore! Edit me in assets/scripts/app.ts')
 ```
 
 ### Install PostCSS CSS compiler with preset-env and PurgeCSS
@@ -639,9 +640,7 @@ Create a new `./postcss.config.js` file:
 
 ```javascript
 const config = {
-  plugins: [
-    require('postcss-preset-env')
-  ]
+  plugins: [require('postcss-preset-env')]
 }
 
 if (process.env.NODE_ENV === 'production') {
@@ -831,6 +830,7 @@ Create a new `./.eslintrc.json` file:
 {
   "extends": [
     "standard-with-typescript",
+    "prettier/@typescript-eslint",
     "prettier-standard"
   ],
   "parserOptions": {
@@ -932,8 +932,8 @@ Add these scripts to  `./package.json` file:
     "lint:twig": "php bin/console lint:twig \"./templates\" && prettier --check \"./templates/**/*.html.twig\"",
     "lint:yml": "php bin/console lint:yaml \"./config\" && prettier --check \"./{config/**/*.yaml,.github/**/*.yml}\"",
     "lint:xml": "./vendor/bin/xmllint -r 0 ./ && prettier --check \"./*.xml\"",
-    "lint:ts": "eslint \"./assets/ts/**/*.ts\"",
-    "lint:css": "stylelint \"./assets/css/**/*.css\" && prettier --check \"./assets/css/**/*.css\"",
+    "lint:ts": "eslint \"./assets/scripts/**/*.ts\"",
+    "lint:css": "stylelint \"./assets/styles/**/*.css\" && prettier --check \"./assets/styles/**/*.css\"",
     "lint:json": "prettier --check \"./*.json\"",
     "lint:md": "markdownlint \"./*.md\"",
     "format": "npm-run-all format:*",
@@ -941,8 +941,8 @@ Add these scripts to  `./package.json` file:
     "format:twig": "prettier --write \"./templates/**/*.html.twig\"",
     "format:yml": "prettier --write \"./{config/**/*.yaml,.github/**/*.yml}\"",
     "format:xml": "prettier --write \"./*.xml\"",
-    "format:ts": "eslint --fix \"./assets/ts/**/*.ts\"",
-    "format:css": "stylelint --fix \"./assets/css/**/*.css\" && prettier --write \"./assets/css/**/*.css\"",
+    "format:ts": "eslint --fix \"./assets/scripts/**/*.ts\"",
+    "format:css": "stylelint --fix \"./assets/styles/**/*.css\" && prettier --write \"./assets/styles/**/*.css\"",
     "format:json": "prettier --write \"./*.json\"",
     "format:md": "markdownlint --fix \"./*.md\""
   }
@@ -984,16 +984,16 @@ Add this to your `./package.json` file :
     "./phpmd.xml": [
       "./vendor/bin/xmllint"
     ],
-    "./assets/ts/**/*.ts": [
+    "./assets/scripts/**/*.ts": [
       "eslint"
     ],
-    "./assets/css/**/*.css": [
+    "./assets/styles/**/*.css": [
       "stylelint"
     ],
     "./*.md": [
       "markdownlint"
     ],
-    "./{src/**/*.php,tests/**/*.php,templates/**/*.html.twig,config/**/*.yaml,.github/**/*.yml,*.xml,assets/css/**/*.css,*.json}": [
+    "./{src/**/*.php,tests/**/*.php,templates/**/*.html.twig,config/**/*.yaml,.github/**/*.yml,*.xml,assets/styles/**/*.css,*.json}": [
       "prettier --check"
     ]
   },

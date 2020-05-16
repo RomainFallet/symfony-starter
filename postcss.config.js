@@ -1,7 +1,5 @@
 const config = {
-  plugins: [
-    require('postcss-preset-env')
-  ]
+  plugins: [require('postcss-preset-env')]
 }
 
 if (process.env.NODE_ENV === 'production') {
