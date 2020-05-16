@@ -544,7 +544,7 @@ composer require api-platform/api-pack:~1.2.2
 [Back to top ↑](#table-of-contents)
 
 ```bash
-composer require --dev symfony/webpack-encore-bundle:~1.7.0
+composer require symfony/webpack-encore-bundle:~1.7.0
 ```
 
 Edit the `./webpack.config.js` file like this:
