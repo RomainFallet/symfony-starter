@@ -80,4 +80,8 @@ jobs:
 
       # Deploy the app to the production machine
       - name: Deploy with rsync
-        run: rsync -av --delete -e "ssh -t -i ~/.ssh/id_rsa -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no" ./ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/
+        run: rsync -av --delete -e "ssh -p ${{ secrets.SSH_PORT }} -t -i ~/.ssh/id_rsa -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no" ./ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/
+
+      # Execute database migrations
+      - name: Database migrations
+        run: ssh -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "php bin/console doctrine:migrations:diff --allow-empty-diff; php bin/console doctrine:migrations:migrate -n"

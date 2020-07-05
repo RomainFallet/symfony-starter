@@ -1173,7 +1173,11 @@ jobs:
 
       # Deploy the app to the production machine
       - name: Deploy with rsync
-        run: rsync -av --delete -e "ssh -t -i ~/.ssh/id_rsa -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no" ./ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/
+        run: rsync -av --delete -e "ssh -p ${{ secrets.SSH_PORT }} -t -i ~/.ssh/id_rsa -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no" ./ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/
+
+      # Execute database migrations
+      - name: Database migrations
+        run: ssh -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "php bin/console doctrine:migrations:diff --allow-empty-diff; php bin/console doctrine:migrations:migrate -n"
 ```
 <!-- markdownlint-enable -->
 
@@ -1181,7 +1185,7 @@ To use the Continuous Delivery feature, you need to have a machine accessible
 through SSH.
 
 Then configure these GitHub Actions encrypted secrets:
-`SSH_USER`, `SSH_PASS` and `SSH_HOST` ([see the doc](https://help.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets)).
+`SSH_USER`, `SSH_PASS`, `SSH_PORT`, `SSH_HOST` and `DATABASE_URI` ([see the doc](https://help.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets)).
 
 ### Integrate formatters, linters & syntax to VSCode
 
@@ -1373,7 +1377,7 @@ yarn format:md
 
 ```bash
 # Generate migration script
-php bin/console doctrine:migrations:diff
+php bin/console doctrine:migrations:diff --allow-empty-diff
 
 # Execute migrations
 php bin/console doctrine:migrations:migrate -n
