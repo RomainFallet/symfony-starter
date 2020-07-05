@@ -1158,12 +1158,6 @@ jobs:
           sudo sed -i'.tmp' -e 's,DATABASE_URL=mysql://db_user:db_password@127.0.0.1:3306/db_name,DATABASE_URL='"${{ secrets.DATABASE_URI }}"',g' ./.env.local
           sudo rm ./.env.local.tmp
 
-      # Set permissions
-      - name: Set permissions
-        run: |
-          find ./ -type f -exec chmod 664 {} \;
-          find ./ -type d -exec chmod 775 {} \;
-
       # Configure passwordless SSH authentication
       - name: Configure SSH
         run: |
@@ -1173,11 +1167,11 @@ jobs:
 
       # Deploy the app to the production machine
       - name: Deploy with rsync
-        run: rsync -av --delete -e "ssh -p ${{ secrets.SSH_PORT }} -t -i ~/.ssh/id_rsa -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no" ./ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/
+        run: rsync -av -e "ssh -p ${{ secrets.SSH_PORT }} -t -i ~/.ssh/id_rsa -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no" ./ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/
 
       # Execute database migrations
       - name: Database migrations
-        run: ssh -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "php bin/console doctrine:migrations:diff --allow-empty-diff; php bin/console doctrine:migrations:migrate -n"
+        run: ssh -p ${{ secrets.SSH_PORT }} -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" "php bin/console doctrine:migrations:diff --allow-empty-diff; php bin/console doctrine:migrations:migrate -n"
 ```
 <!-- markdownlint-enable -->
 
