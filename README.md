@@ -1158,6 +1158,17 @@ jobs:
           sudo sed -i'.tmp' -e 's,DATABASE_URL=mysql://db_user:db_password@127.0.0.1:3306/db_name,DATABASE_URL='"${{ secrets.DATABASE_URI }}"',g' ./.env.local
           sudo rm ./.env.local.tmp
 
+      # Create tmp directory for file upload if not existing
+      - name: Create tmp dir
+        run: |
+          mkdir -p ./tmp
+
+      # Set permissions
+      - name: Set permissions
+        run: |
+          find ./ -type f -exec chmod 664 {} \;
+          find ./ -type d -exec chmod 775 {} \;
+
       # Configure passwordless SSH authentication
       - name: Configure SSH
         run: |
@@ -1167,7 +1178,7 @@ jobs:
 
       # Deploy the app to the production machine
       - name: Deploy with rsync
-        run: rsync -av -e "ssh -p ${{ secrets.SSH_PORT }} -t -i ~/.ssh/id_rsa -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no" ./ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/
+        run: rsync -av -e "ssh -p ${{ secrets.SSH_PORT }} -t -i ~/.ssh/id_rsa -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no" --exclude ./.git ./ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/
 
       # Execute database migrations
       - name: Database migrations
